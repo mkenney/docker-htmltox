@@ -4,17 +4,23 @@ FROM golang:1.9
 ENV DEBIAN_FRONTEND=noninteractive \
     TERM=xterm \
     TIMEZONE=UTC
+
+    # Basic .bashrc
 RUN echo 'alias ll="ls -laF"' >> /root/.bashrc \
     && echo 'alias e="exit"' >> /root/.bashrc \
-    && echo 'alias cls="clear"' >> /root/.bashrc \
-    && apt-get -qqy update \
+    && echo 'alias cls="clear"' >> /root/.bashrc
+
+    # System software
+RUN apt-get -qqy update \
     && apt-get -qqy --no-install-recommends install \
-        apt-transport-https \
         ca-certificates \
         gnupg \
+        libcap2-bin \
         tzdata \
-        wget \
-    && echo $TIMEZONE > /etc/timezone \
+        wget
+
+    # System configuration
+RUN echo $TIMEZONE > /etc/timezone \
     && DEBCONF_NONINTERACTIVE_SEEN=true dpkg-reconfigure --frontend noninteractive tzdata \
     && go get -u github.com/golang/dep/cmd/dep
 
@@ -39,10 +45,14 @@ RUN rm /etc/apt/sources.list.d/google.list \
 
 # Install htmltox
 COPY ./src /go/src/htmltox
-RUN cd /go/src/htmltox \
-    && dep ensure \
+RUN set -x \
+    && cd /go/src/htmltox \
+    #&& dep ensure \
     && go build -o /go/bin/htmltox \
     && chmod +x /go/bin/htmltox
+
+# Grant the process permission to bind to port 80
+RUN setcap 'cap_net_bind_service=+ep' /go/bin/htmltox
 
 EXPOSE 80
 USER chrome

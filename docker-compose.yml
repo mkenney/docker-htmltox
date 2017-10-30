@@ -1,0 +1,9 @@
+version: '2'
+services:
+    htmltox:
+        build:
+            context: ./
+            dockerfile: ./Dockerfile
+        container_name: htmltox
+        ports:
+            - "80"
