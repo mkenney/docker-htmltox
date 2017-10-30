@@ -11,7 +11,7 @@
   branch = "master"
   name = "github.com/mkenney/go-chrome"
   packages = ["."]
-  revision = "66cd12f75590480c002e77a39c26a3d0065df60f"
+  revision = "bbccb6d3a9bc009a018a2ee0b1c7584aa1023c10"
 
 [solve-meta]
   analyzer-name = "dep"

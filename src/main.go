@@ -11,12 +11,15 @@ import (
 )
 
 func main() {
-	browser, err := chrome.GetBrowser()
+	var err error
+	var browser *chrome.Browser
+	var conn *chrome.Socket
+	browser, err = chrome.GetBrowser()
 	if nil != err {
-		log.Fatalf("Could not load browser instance: %v", err)
+		log.Panicf("[FATAL] Could not load browser instance: %v", err)
 		return
 	}
-	log.Printf("Browser instance initialized")
+	log.Printf("[INFO] Browser instance initialized")
 	tabs, _ := browser.GetTabs()
 	for _, tab := range tabs {
 		fmt.Printf("Tab: %v\n", tab)
@@ -29,6 +32,9 @@ func main() {
 		fmt.Printf("\tWebSocketDebuggerURL: %v\n", tab.WebSocketDebuggerURL)
 		fmt.Printf("\tSocket: %v\n", tab.Socket)
 	}
+
+	conn, err = browser.NewBrowserSocket()
+	log.Printf("Websocket: %v\n", conn)
 
 	browser.Close()
 }
