@@ -45,9 +45,8 @@ RUN rm /etc/apt/sources.list.d/google.list \
 
 # Install htmltox
 COPY ./src /go/src/htmltox
-RUN set -x \
-    && cd /go/src/htmltox \
-    #&& dep ensure \
+RUN cd /go/src/htmltox \
+    && dep ensure \
     && go build -o /go/bin/htmltox \
     && chmod +x /go/bin/htmltox
 

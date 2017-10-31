@@ -7,3 +7,5 @@ services:
         container_name: htmltox
         ports:
             - "80"
+        volumes:
+            - ./src:/go/src/htmltox

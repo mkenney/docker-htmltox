@@ -23,7 +23,7 @@
   branch = "master"
   name = "github.com/mkenney/go-rest-lite"
   packages = ["."]
-  revision = "8664ba09cefbd46cb3918c64e710dad70196cea3"
+  revision = "db8263b2ec3399b051ed7ae42d75e751d160b318"
 
 [[projects]]
   branch = "master"

@@ -16,6 +16,7 @@ func main() {
 		log.Fatalf("Could not initialize conversion struct: %v", err)
 	}
 	htmltox.Listen(80)
+
 	for {
 		break
 	}

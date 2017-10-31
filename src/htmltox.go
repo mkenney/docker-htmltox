@@ -20,6 +20,7 @@ HTMLToX defines the struct for the HTML conversion API service
 type HTMLToX struct {
 	browser *chrome.Browser
 	sockets map[string]*chrome.Socket
+	server  *api.API
 }
 
 /*
@@ -50,16 +51,16 @@ a byte array of the resulting image
 @param height The viewport height
 */
 func (htmltox *HTMLToX) Render(source, format string, width, height int) (result []byte, err error) {
-	return
+	return result, fmt.Errorf("Not implemented")
 }
 
 /*
 Listen starts the HTTP service
 */
 func (htmltox *HTMLToX) Listen(port int) (err error) {
-	server := api.NewServer()
-	defineRoutes(server)
-	server.ListenAndServe(fmt.Sprintf(":%d", port))
+	htmltox.server = api.NewServer()
+	defineRoutes(htmltox.server)
+	htmltox.server.ListenAndServe(port)
 	return
 }
 
@@ -71,14 +72,12 @@ func defineRoutes(server *api.API) {
 	// Usage
 	server.AddHandler("/", func(request *http.Request, response *api.Response) {
 		if "GET" == request.Method {
-			content, err := ioutil.ReadFile("testdata/hello")
+			content, err := ioutil.ReadFile("/go/src/htmltox/usage.html")
 			if err != nil {
-				response.StatusCode = 500
-				response.StatusMessage = fmt.Sprintf("%v", err)
-				response.Errors = append(response.Errors, err)
+				response.AddError(err, 500)
 				log.Error(err)
 			} else {
-				response.Channel <- content
+				response.HTMLBody = string(content)
 			}
 		}
 		response.Channel <- response.Done()
