@@ -17,25 +17,25 @@
   branch = "master"
   name = "github.com/mkenney/go-chrome"
   packages = ["."]
-  revision = "230a55da76672b7a4352397604c69d794db01459"
+  revision = "e8e26bcc3805fbbb12ce8465795048f127bdaa1a"
 
 [[projects]]
   branch = "master"
   name = "github.com/mkenney/go-rest-lite"
   packages = ["."]
-  revision = "db8263b2ec3399b051ed7ae42d75e751d160b318"
+  revision = "d6cc937c7dedf2bbe658abdab7202c416a946017"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "2509b142fb2b797aa7587dad548f113b2c0f20ce"
+  revision = "bd6f299fb381e4c3393d1c4b1f0b94f5e77650c8"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
   packages = ["unix","windows"]
-  revision = "661970f62f5897bc0cd5fdca7e087ba8a98a8fa1"
+  revision = "95c6576299259db960f6c5b9b69ea52422860fce"
 
 [solve-meta]
   analyzer-name = "dep"
