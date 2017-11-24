@@ -44,15 +44,16 @@ RUN rm /etc/apt/sources.list.d/google.list \
     && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 # Install htmltox
-COPY ./src /go/src/htmltox
-RUN cd /go/src/htmltox \
+COPY ./app /go/src/app
+RUN cd /go/src/app \
     && dep ensure \
-    && go build -o /go/bin/htmltox \
-    && chmod +x /go/bin/htmltox
+    && go build -o /go/bin/app
 
 # Grant the process permission to bind to port 80
-RUN setcap 'cap_net_bind_service=+ep' /go/bin/htmltox
+RUN setcap 'cap_net_bind_service=+ep' /go/bin/app
 
+WORKDIR /go/src/app
 EXPOSE 80
-USER chrome
-CMD /go/bin/htmltox
+EXPOSE 9222
+#USER chrome
+CMD /go/bin/app

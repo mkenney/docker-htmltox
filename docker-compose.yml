@@ -7,5 +7,12 @@ services:
         container_name: htmltox
         ports:
             - "80"
+            - "9222:9222"
         volumes:
-            - ./src:/go/src/htmltox
+            - ./app:/go/src/app
+        environment:
+            - LOG_LEVEL=debug
+        entrypoint: sh
+        command:
+            - '-cexu'
+            - 'cd /go/src/app && go build -o /go/bin/app && /go/bin/app'
