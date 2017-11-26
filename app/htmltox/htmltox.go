@@ -220,6 +220,29 @@ func getHandler(params url.Values, api *api.API, response http.ResponseWriter) (
 	}
 }
 
+func getHandlerTest(params url.Values, api *api.API, response http.ResponseWriter) (func(results []chrome.SocketResult), error) {
+	var raw bool
+	if _, ok := params["raw"]; ok {
+		raw = true
+	}
+	if len(params["url"]) > 1 && raw {
+		return nil, fmt.Errorf("'raw' is an invalid parameter when rendering multiple images")
+	} else if raw {
+		return func(results []chrome.SocketResult) {
+			api.RespondWithImage(response, http.StatusOK, results[0].Data, "jpeg")
+			log.Debug("Result sent")
+		}, nil
+	} else {
+		return func(results []chrome.SocketResult) {
+			data := make([]string, 0)
+			for _, result := range results {
+				data = append(data, result.Data)
+			}
+			api.RespondWithJSON(response, http.StatusOK, data)
+		}, nil
+	}
+}
+
 func (htmltox *HTMLToX) test(response http.ResponseWriter, request *http.Request) {
 	var err error
 
@@ -241,13 +264,14 @@ func (htmltox *HTMLToX) test(response http.ResponseWriter, request *http.Request
 		return
 	}
 
-	handler, err := getHandler(params, htmltox.API, response)
+	handler, err := getHandlerTest(params, htmltox.API, response)
 	if nil != err {
 		log.Errorf("Failed to generate response handler: %s", err)
 		htmltox.API.RespondWithError(response, 400, fmt.Sprintf("%s", err))
 		return
 	}
-	chrome.RenderScreenshots(params, handler)
+	//chrome.RenderScreenshots(params, handler)
+	chrome.RenderScreenshotsTest(params, handler)
 
 	return
 }

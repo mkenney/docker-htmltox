@@ -1,6 +1,3 @@
-/*
-Package chrome provides an interface to a headless Chrome instance.
-*/
 package chrome
 
 import (
@@ -13,9 +10,9 @@ SocketScreenshotCmd is a representation of the CaptureScreenshot command
 */
 type SocketScreenshotCmd struct {
 	err    error
+	params *socketScreenshotParams
 	result SocketScreenshotResult
 	wg     sync.WaitGroup
-	params *socketScreenshotParams
 }
 type socketScreenshotParams struct {
 	Format      string      `json:"format,omitempty"`

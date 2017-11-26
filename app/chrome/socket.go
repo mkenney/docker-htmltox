@@ -1,6 +1,3 @@
-/*
-Package chrome provides an interface to a headless Chrome instance.
-*/
 package chrome
 
 import (
@@ -11,21 +8,11 @@ import (
 	"sync"
 	"time"
 
+	"app/chrome/protocol"
+
 	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/websocket"
 )
-
-/*
-Socket represents a websocket connection to the Browser instance
-*/
-type Socket struct {
-	cmdID    int
-	cmdMutex sync.Mutex
-	evtMutex sync.Mutex
-	events   map[string][]EventInterface
-	commands map[int]SocketCmdIface // key is id.
-	conn     *websocket.Conn
-}
 
 /*
 NewSocket returns a new websocket connection
@@ -47,13 +34,36 @@ func NewSocket(tab *Tab) (*Socket, error) {
 
 	socket := &Socket{
 		conn:     webSocket,
-		commands: make(map[int]socketCmdIface),
+		commands: make(map[int]SocketCmdIface),
 		events:   make(map[string][]EventInterface),
 	}
 	go socket.Listen(tab)
 
 	log.Infof("New socket connection listening on %s", tab.WebSocketDebuggerURL)
 	return socket, nil
+}
+
+/*
+Socket represents a websocket connection to the Browser instance
+*/
+type Socket struct {
+	cmdID      int
+	cmdMutex   sync.Mutex
+	eventMutex sync.Mutex
+	events     map[string][]EventIface // key is event name.
+	commands   map[int]CommandIface    // key is id.
+	conn       *websocket.Conn
+}
+
+/*
+SocketResponse represents a socket message
+*/
+type SocketResponse struct {
+	Error  SocketError     `json:"error"`
+	ID     int             `json:"id"`
+	Method string          `json:"method"`
+	Params json.RawMessage `json:"params"`
+	Result json.RawMessage `json:"result"`
 }
 
 /*
@@ -79,7 +89,7 @@ func (socket *Socket) Listen(tab *Tab) {
 				break
 			}
 		} else if response.ID > 0 {
-			socket.handleCmd(response)
+			socket.handleCommand(response)
 		} else {
 			params, _ := json.Marshal(response.Params)
 			log.Infof("%s: %s", tab.ID, response.Method)
@@ -88,4 +98,29 @@ func (socket *Socket) Listen(tab *Tab) {
 		}
 		time.Sleep(100 * time.Millisecond)
 	}
+}
+
+/*
+SendCommand sends a command payload to the socket
+*/
+func (socket *Socket) SendCommand(command protocol.CommandIface) int {
+	command.WG.Add(1)
+	socket.cmdMutex.Lock()
+	defer socket.cmdMutex.Unlock()
+
+	socket.cmdID++
+	payload := &protocol.CommandPayload{
+		socket.cmdID,
+		command.Method(),
+		command.Params(),
+	}
+	tmp, _ := json.Marshal(payload)
+	log.Debugf("Sending %#v", string(tmp))
+	if err := socket.conn.WriteJSON(payload); err != nil {
+		command.Done(nil, err)
+	}
+	socket.commands[payload.ID] = command
+
+	command.WG.Wait()
+	return payload.ID
 }

@@ -1,6 +1,3 @@
-/*
-Package tab provides an interface to a headless Chrome tab instance.
-*/
 package chrome
 
 import (
@@ -196,6 +193,88 @@ func RenderScreenshots(params url.Values, handle func(results []SocketScreenshot
 				} else {
 					log.Infof("%d second timeout exceeded, sending screenshot command to socket", timeout)
 				}
+				results = append(results, takeScreenshot(tab))
+				splice = append(splice, k)
+			}
+		}
+
+		for a := len(splice) - 1; a >= 0; a-- {
+			tabs = append(tabs[:splice[a]], tabs[splice[a]+1:]...)
+		}
+		if 0 == len(tabs) {
+			break
+		}
+		time.Sleep(1 * time.Second)
+	}
+
+	handle(results)
+}
+
+func RenderScreenshotsTest(params url.Values, handle func(results []SocketResult)) {
+	takeScreenshot := func(tab *Tab) SocketResult {
+		log.Debugf("Screenshot params: %v", params)
+
+		var viewportParams interface{}
+		height, _ := strconv.Atoi(params["height"][0])
+		scale, _ := strconv.Atoi(params["scale"][0])
+		width, _ := strconv.Atoi(params["width"][0])
+		x, _ := strconv.Atoi(params["x-offset"][0])
+		y, _ := strconv.Atoi(params["y-offset"][0])
+		viewportParams = nil
+		if height != 0 || width != 0 || x != 0 || y != 0 {
+			viewportParams = &socketScreenshotViewport{
+				x,
+				y,
+				width,
+				height,
+				scale,
+			}
+		}
+
+		quality := 0
+		if len(params["quality"]) > 0 {
+			quality, _ = strconv.Atoi(params["quality"][0])
+		}
+
+		cmd := NewSocketCmd(
+			"Page.captureScreenshot",
+			&socketScreenshotParams{
+				params["format"][0],
+				quality,
+				viewportParams,
+				false,
+			})
+		cmd.Run(tab.Socket)
+
+		return cmd.result
+	}
+
+	tabs := make([]*Tab, 0)
+	errors := make([]error, 0)
+	for _, url := range params["url"] {
+		tab, err := NewTab(url)
+		if nil != err {
+			errors = append(errors, err)
+		} else {
+			tabs = append(tabs, tab)
+		}
+	}
+
+	results := make([]SocketResult, 0)
+	start := time.Now()
+	timeout, _ := strconv.Atoi(params["timeout"][0])
+	for {
+		splice := make([]int, 0)
+		for k, tab := range tabs {
+			if tab.loadEventFired || (timeout > 0 && time.Since(start) > (time.Duration(timeout)*time.Second)) {
+				if tab.loadEventFired {
+					log.Info("Page loaded, sending screenshot command to socket")
+				} else {
+					log.Infof("%d second timeout exceeded, sending screenshot command to socket", timeout)
+				}
+				log.Debugf("****************************************************")
+				log.Debugf("****************************************************")
+				log.Debugf("****************************************************")
 				results = append(results, takeScreenshot(tab))
 				splice = append(splice, k)
 			}

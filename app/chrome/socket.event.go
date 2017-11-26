@@ -1,78 +1,50 @@
-/*
-Package chrome provides an interface to a headless Chrome instance.
-*/
 package chrome
 
 import (
+	"app/chrome/protocol"
+
 	log "github.com/Sirupsen/logrus"
 )
 
 /*
-EventInterface is an interface
+AddEventHandler adds an event handler to the socket
 */
-type EventInterface interface {
-	OnEvent(name string, params []byte)
-}
-type simpleEvent struct {
-	cb func(name string, params []byte)
-}
+func (socket *Socket) AddEventHandler(event protocol.EventInterface) {
+	socket.eventMutex.Lock()
+	defer socket.eventMutex.Unlock()
 
-/*
-OnEvent
-*/
-func (s *simpleEvent) OnEvent(name string, params []byte) {
-	s.cb(name, params)
-}
-
-func FuncToEvent(fn func(name string, params []byte)) EventInterface {
-	return &simpleEvent{fn}
-}
-
-/*
-AddEvent adds an event to the event stack
-*/
-func (socket *Socket) AddEventHandler(name string, cb func(name string, params []byte)) {
-	handler := FuncToEvent(cb)
-	socket.evtMutex.Lock()
-	defer socket.evtMutex.Unlock()
-	for _, registeredEvent := range socket.events[name] {
-		if registeredEvent == handler {
+	for _, evt := range socket.events[event.Name()] {
+		if evt == event {
 			return
 		}
 	}
-	socket.events[name] = append(socket.events[name], handler)
+	socket.events[event.Name()] = append(socket.events[event.Name()], event)
 }
 
 /*
-RemoveEvent removes an event from the stack
+RemoveEventHandler removes an event handler from the socket
 */
-func (socket *Socket) RemoveEvent(name string, event EventInterface) {
-	socket.evtMutex.Lock()
-	defer socket.evtMutex.Unlock()
-	events := socket.events[name]
-	for i, s := range events {
-		if s == event {
-			l := len(events)
-			events[i] = events[l-1]
-			socket.events[name] = events[:l-1]
+func (socket *Socket) RemoveEventHandler(event protocol.EventInterface) {
+	socket.eventMutex.Lock()
+	defer socket.eventMutex.Unlock()
+
+	events := socket.events[event.Name()]
+	for i, evt := range events {
+		if evt == sink {
+			evtCount := len(events)
+			events[i] = events[evtCount-1]
+			socket.events[event.Name()] = events[:evtCount-1]
 			return
 		}
 	}
-}
-
-/*
-NewEvent creates a new event struct
-*/
-func NewEvent(cb func(name string, params []byte)) EventInterface {
-	return &simpleEvent{cb}
 }
 
 func (socket *Socket) handleEvent(response *SocketResponse) {
 	if response.Method == "Inspector.targetCrashed" {
 		log.Fatalf("Chrome has crashed!")
 	}
-	socket.evtMutex.Lock()
-	defer socket.evtMutex.Unlock()
+	socket.eventMutex.Lock()
+	defer socket.eventMutex.Unlock()
 
 	log.Debugf("Event received: '%v'", response)
 	for _, event := range socket.events[response.Method] {
