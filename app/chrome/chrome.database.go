@@ -2,7 +2,7 @@ package chrome
 
 import (
 	"app/chrome/protocol"
-	database "app/chrome/protocol/database"
+	database "app/chrome/database"
 )
 
 /*

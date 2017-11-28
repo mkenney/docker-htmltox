@@ -1,8 +1,8 @@
 package chrome
 
 import (
+	domdebugger "app/chrome/domdebugger"
 	"app/chrome/protocol"
-	domdebugger "app/chrome/protocol/domdebugger"
 )
 
 /*

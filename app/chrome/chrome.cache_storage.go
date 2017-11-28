@@ -1,8 +1,8 @@
 package chrome
 
 import (
+	cacheStorage "app/chrome/cache_storage"
 	"app/chrome/protocol"
-	cacheStorage "app/chrome/protocol/cache_storage"
 )
 
 /*

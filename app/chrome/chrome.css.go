@@ -2,7 +2,7 @@ package chrome
 
 import (
 	"app/chrome/protocol"
-	css "app/chrome/protocol/css"
+	css "app/chrome/css"
 )
 
 /*

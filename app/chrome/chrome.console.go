@@ -2,7 +2,7 @@ package chrome
 
 import (
 	"app/chrome/protocol"
-	console "app/chrome/protocol/console"
+	console "app/chrome/console"
 )
 
 /*
