@@ -36,7 +36,7 @@ func (Debugger) Disable(socket *Socket) error {
 /*
 SetBreakpointsActive activates / deactivates all breakpoints on the page.
 */
-func (Database) SetBreakpointsActive(socket *Socket, params *debugger.SetBreakpointsActiveParams) error {
+func (Debugger) SetBreakpointsActive(socket *Socket, params *debugger.SetBreakpointsActiveParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.setBreakpointsActive"
 	command.params = params
@@ -47,7 +47,7 @@ func (Database) SetBreakpointsActive(socket *Socket, params *debugger.SetBreakpo
 /*
 SetSkipAllPauses makes page not interrupt on any pauses (breakpoint, exception, dom exception etc).
 */
-func (Database) SetSkipAllPauses(socket *Socket, params *debugger.SetSkipAllPausesParams) error {
+func (Debugger) SetSkipAllPauses(socket *Socket, params *debugger.SetSkipAllPausesParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.setSkipAllPauses"
 	command.params = params
@@ -61,7 +61,7 @@ regex. Once this command is issued, all existing parsed scripts will have breakp
 returned in locations property. Further matching script parsing will result in subsequent
 breakpointResolved events issued. This logical breakpoint will survive page reloads.
 */
-func (Database) SetBreakpointByURL(socket *Socket, params *debugger.SetBreakpointByURLParams) error {
+func (Debugger) SetBreakpointByURL(socket *Socket, params *debugger.SetBreakpointByURLParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.setBreakpointByUrl"
 	command.params = params
@@ -72,7 +72,7 @@ func (Database) SetBreakpointByURL(socket *Socket, params *debugger.SetBreakpoin
 /*
 SetBreakpoint sets JavaScript breakpoint at a given location.
 */
-func (Database) SetBreakpoint(socket *Socket, params *debugger.SetBreakpointParams) error {
+func (Debugger) SetBreakpoint(socket *Socket, params *debugger.SetBreakpointParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.setBreakpoint"
 	command.params = params
@@ -83,7 +83,7 @@ func (Database) SetBreakpoint(socket *Socket, params *debugger.SetBreakpointPara
 /*
 RemoveBreakpoint removes JavaScript breakpoint.
 */
-func (Database) RemoveBreakpoint(socket *Socket, params *debugger.RemoveBreakpointParams) error {
+func (Debugger) RemoveBreakpoint(socket *Socket, params *debugger.RemoveBreakpointParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.removeBreakpoint"
 	command.params = params
@@ -95,7 +95,7 @@ func (Database) RemoveBreakpoint(socket *Socket, params *debugger.RemoveBreakpoi
 GetPossibleBreakpoints returns possible locations for breakpoint. scriptId in start and end range
 locations should be the same.
 */
-func (Database) GetPossibleBreakpoints(socket *Socket, params *debugger.GetPossibleBreakpointsParams) error {
+func (Debugger) GetPossibleBreakpoints(socket *Socket, params *debugger.GetPossibleBreakpointsParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.getPossibleBreakpoints"
 	command.params = params
@@ -106,7 +106,7 @@ func (Database) GetPossibleBreakpoints(socket *Socket, params *debugger.GetPossi
 /*
 ContinueToLocation continues execution until specific location is reached.
 */
-func (Database) ContinueToLocation(socket *Socket, params *debugger.ContinueToLocationParams) error {
+func (Debugger) ContinueToLocation(socket *Socket, params *debugger.ContinueToLocationParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.continueToLocation"
 	command.params = params
@@ -117,7 +117,7 @@ func (Database) ContinueToLocation(socket *Socket, params *debugger.ContinueToLo
 /*
 PauseOnAsyncCall EXPERIMENTAL
 */
-func (Database) PauseOnAsyncCall(socket *Socket, params *debugger.PauseOnAsyncCallParams) error {
+func (Debugger) PauseOnAsyncCall(socket *Socket, params *debugger.PauseOnAsyncCallParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.pauseOnAsyncCall"
 	command.params = params
@@ -138,7 +138,7 @@ func (Debugger) StepOver(socket *Socket) error {
 /*
 StepInto steps into the function call.
 */
-func (Database) StepInto(socket *Socket, params *debugger.StepIntoParams) error {
+func (Debugger) StepInto(socket *Socket, params *debugger.StepIntoParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.stepInto"
 	command.params = params
@@ -192,7 +192,7 @@ func (Debugger) Resume(socket *Socket) error {
 /*
 GetStackTrace returns stack trace with given stackTraceId. EXPERIMENTAL
 */
-func (Database) GetStackTrace(socket *Socket, params *debugger.GetStackTraceParams) error {
+func (Debugger) GetStackTrace(socket *Socket, params *debugger.GetStackTraceParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.getStackTrace"
 	command.params = params
@@ -203,7 +203,7 @@ func (Database) GetStackTrace(socket *Socket, params *debugger.GetStackTracePara
 /*
 SearchInContent searches for given string in script content.
 */
-func (Database) SearchInContent(socket *Socket, params *debugger.SearchInContentParams) error {
+func (Debugger) SearchInContent(socket *Socket, params *debugger.SearchInContentParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.searchInContent"
 	command.params = params
@@ -214,7 +214,7 @@ func (Database) SearchInContent(socket *Socket, params *debugger.SearchInContent
 /*
 SetScriptSource edits JavaScript source live.
 */
-func (Database) SetScriptSource(socket *Socket, params *debugger.SetScriptSourceParams) error {
+func (Debugger) SetScriptSource(socket *Socket, params *debugger.SetScriptSourceParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.setScriptSource"
 	command.params = params
@@ -225,7 +225,7 @@ func (Database) SetScriptSource(socket *Socket, params *debugger.SetScriptSource
 /*
 RestartFrame restarts particular call frame from the beginning.
 */
-func (Database) RestartFrame(socket *Socket, params *debugger.RestartFrameParams) error {
+func (Debugger) RestartFrame(socket *Socket, params *debugger.RestartFrameParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.restartFrame"
 	command.params = params
@@ -236,7 +236,7 @@ func (Database) RestartFrame(socket *Socket, params *debugger.RestartFrameParams
 /*
 GetScriptSource returns source for the script with given id.
 */
-func (Database) GetScriptSource(socket *Socket, params *debugger.GetScriptSourceParams) error {
+func (Debugger) GetScriptSource(socket *Socket, params *debugger.GetScriptSourceParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.getScriptSource"
 	command.params = params
@@ -248,7 +248,7 @@ func (Database) GetScriptSource(socket *Socket, params *debugger.GetScriptSource
 SetPauseOnExceptions defines the pause on exceptions state. Can be set to stop on all exceptions,
 uncaught exceptions or no exceptions. Initial pause on exceptions state is none.
 */
-func (Database) SetPauseOnExceptions(socket *Socket, params *debugger.SetPauseOnExceptionsParams) error {
+func (Debugger) SetPauseOnExceptions(socket *Socket, params *debugger.SetPauseOnExceptionsParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.setPauseOnExceptions"
 	command.params = params
@@ -259,7 +259,7 @@ func (Database) SetPauseOnExceptions(socket *Socket, params *debugger.SetPauseOn
 /*
 EvaluateOnCallFrame evaluates expression on a given call frame.
 */
-func (Database) EvaluateOnCallFrame(socket *Socket, params *debugger.EvaluateOnCallFrameParams) error {
+func (Debugger) EvaluateOnCallFrame(socket *Socket, params *debugger.EvaluateOnCallFrameParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.evaluateOnCallFrame"
 	command.params = params
@@ -271,7 +271,7 @@ func (Database) EvaluateOnCallFrame(socket *Socket, params *debugger.EvaluateOnC
 SetVariableValue changes value of variable in a callframe. Object-based scopes are not supported and
 must be mutated manually.
 */
-func (Database) SetVariableValue(socket *Socket, params *debugger.SetVariableValueParams) error {
+func (Debugger) SetVariableValue(socket *Socket, params *debugger.SetVariableValueParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.setVariableValue"
 	command.params = params
@@ -283,7 +283,7 @@ func (Database) SetVariableValue(socket *Socket, params *debugger.SetVariableVal
 SetReturnValue changes return value in top frame. Available only at return break position.
 EXPERIMENTAL
 */
-func (Database) SetReturnValue(socket *Socket, params *debugger.SetReturnValueParams) error {
+func (Debugger) SetReturnValue(socket *Socket, params *debugger.SetReturnValueParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.setReturnValue"
 	command.params = params
@@ -294,7 +294,7 @@ func (Database) SetReturnValue(socket *Socket, params *debugger.SetReturnValuePa
 /*
 SetAsyncCallStackDepth enables or disables async call stacks tracking.
 */
-func (Database) SetAsyncCallStackDepth(socket *Socket, params *debugger.SetAsyncCallStackDepthParams) error {
+func (Debugger) SetAsyncCallStackDepth(socket *Socket, params *debugger.SetAsyncCallStackDepthParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.setAsyncCallStackDepth"
 	command.params = params
@@ -308,7 +308,7 @@ stepping/pausing in scripts with url matching one of the patterns. VM will try t
 script by performing 'step in' several times, finally resorting to 'step out' if unsuccessful.
 EXPERIMENTAL
 */
-func (Database) SetBlackboxPatterns(socket *Socket, params *debugger.SetBlackboxPatternsParams) error {
+func (Debugger) SetBlackboxPatterns(socket *Socket, params *debugger.SetBlackboxPatternsParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.setBlackboxPatterns"
 	command.params = params
@@ -322,7 +322,7 @@ blacklisted scripts by performing 'step in' several times, finally resorting to 
 unsuccessful. Positions array contains positions where blackbox state is changed. First interval
 isn't blackboxed. Array should be sorted.
 */
-func (Database) SetBlackboxedRanges(socket *Socket, params *debugger.SetBlackboxedRangesParams) error {
+func (Debugger) SetBlackboxedRanges(socket *Socket, params *debugger.SetBlackboxedRangesParams) error {
 	command := new(protocol.Command)
 	command.method = "Debugger.setBlackboxedRanges"
 	command.params = params
