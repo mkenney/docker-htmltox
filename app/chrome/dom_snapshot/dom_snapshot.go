@@ -6,6 +6,14 @@ import (
 )
 
 /*
+GetSnapshotParams represents DOMSnapshot.getSnapshot parameters.
+*/
+type GetSnapshotParams struct {
+	// Whitelist of computed styles to return.
+	ComputedStyleWhitelist []string `json:"computedStyleWhitelist"`
+}
+
+/*
 DOMNode is a Node in the DOM tree.
 */
 type DOMNode struct {

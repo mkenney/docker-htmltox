@@ -6,6 +6,34 @@ import (
 )
 
 /*
+GetWindowForTargetParams represents Browser.getWindowForTarget parameters
+*/
+type GetWindowForTargetParams struct {
+	// Devtools agent host id.
+	TargetID Target.TargetID `json:"targetId"`
+}
+
+/*
+SetWindowBoundsParams represents Browser.setWindowBounds parameters
+*/
+type SetWindowBoundsParams struct {
+	// Browser window id.
+	WindowID WindowID `json:"windowId"`
+
+	// New window bounds. The 'minimized', 'maximized' and 'fullscreen' states cannot be combined
+	// with 'left', 'top', 'width' or 'height'. Leaves unspecified fields unchanged.
+	Bounds Bounds `json:"bounds"`
+}
+
+/*
+GetWindowBoundsParams represents Browser.getWindowBounds parameters
+*/
+type GetWindowBoundsParams struct {
+	// Browser window id.
+	WindowID WindowID `json:"windowId"`
+}
+
+/*
 WindowID - EXPERIMENTAL
 */
 type WindowID int
@@ -56,32 +84,4 @@ type Bounds struct {
 
 	// Optional. The window state. Default to normal.
 	WindowState WindowState `json:"windowState,omitempty"`
-}
-
-/*
-GetWindowForTargetParams represents Browser.getWindowForTarget parameters
-*/
-type GetWindowForTargetParams struct {
-	// Devtools agent host id.
-	TargetID Target.TargetID `json:"targetId"`
-}
-
-/*
-SetWindowBoundsParams represents Browser.setWindowBounds parameters
-*/
-type SetWindowBoundsParams struct {
-	// Browser window id.
-	WindowID WindowID `json:"windowId"`
-
-	// New window bounds. The 'minimized', 'maximized' and 'fullscreen' states cannot be combined
-	// with 'left', 'top', 'width' or 'height'. Leaves unspecified fields unchanged.
-	Bounds Bounds `json:"bounds"`
-}
-
-/*
-GetWindowBoundsParams represents Browser.getWindowBounds parameters
-*/
-type GetWindowBoundsParams struct {
-	// Browser window id.
-	WindowID WindowID `json:"windowId"`
 }

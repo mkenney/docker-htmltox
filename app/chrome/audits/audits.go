@@ -15,7 +15,7 @@ type GetEncodedResponseParams struct {
 	Encoding string `json:"encoding"`
 
 	// The quality of the encoding (0-1). (defaults to 1).
-	Quality int `json:"quality"`
+	Quality float64 `json:"quality"`
 
 	// Whether to only return the size information (defaults to false).
 	SizeOnly bool `json:"sizeOnly"`

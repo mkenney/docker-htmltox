@@ -5,6 +5,74 @@ import (
 )
 
 /*
+GetCurrentTimeParams represents Animation.getCurrentTime parameters
+*/
+type GetCurrentTimeParams struct {
+	// Playback rate for animations on page.
+	PlaybackRate int `json:"playbackRate"`
+}
+
+/*
+ReleaseAnimationsParams represents Animation.releaseAnimations parameters
+*/
+type ReleaseAnimationsParams struct {
+	// List of animation ids to seek.
+	Animations []string `json:"animations"`
+}
+
+/*
+ResolveAnimationParams represents Animation.resolveAnimation parameters
+*/
+type ResolveAnimationParams struct {
+	// Animation ID.
+	AnimationID string `json:"animationId"`
+}
+
+/*
+SeekAnimationsParams represents Animation.seekAnimations parameters
+*/
+type SeekAnimationsParams struct {
+	// List of animation ids to seek.
+	Animations []string `json:"animations"`
+
+	// Set the current time of each animation.
+	CurrentTime float64 `json:"currentTime"`
+}
+
+/*
+SetPausedParams represents Animation.setPaused parameters
+*/
+type SetPausedParams struct {
+	// Animations to set the pause state of.
+	Animations []string `json:"animations"`
+
+	// Paused state to set to.
+	Paused bool `json:"paused"`
+}
+
+/*
+SetPlaybackRateParams represents Animation.setPlaybackRate parameters
+*/
+type SetPlaybackRateParams struct {
+	// Playback rate for animations on page.
+	PlaybackRate float64 `json:"playbackRate"`
+}
+
+/*
+SetTimingParams represents Animation.setTiming parameters
+*/
+type SetTimingParams struct {
+	// Animation ID.
+	AnimationID string `json:"animationId"`
+
+	// Duration of the animation.
+	Duration float64 `json:"duration"`
+
+	// Delay of the animation.
+	Delay float64 `json:"delay"`
+}
+
+/*
 Animation instance
 */
 type Animation struct {
@@ -21,13 +89,13 @@ type Animation struct {
 	PlayState string `json:"playState"`
 
 	// Animation's playback rate.
-	PlaybackRate int `json:"playbackRate"`
+	PlaybackRate float64 `json:"playbackRate"`
 
 	// Animation's start time.
-	StartTime int `json:"startTime"`
+	StartTime float64 `json:"startTime"`
 
 	// Animation's current time.
-	CurrentTime int `json:"currentTime"`
+	CurrentTime float64 `json:"currentTime"`
 
 	// Animation type of Animation. Allowed values: CSSTransition, CSSAnimation, WebAnimation.
 	Type string `json:"type"`
@@ -45,19 +113,19 @@ AnimationEffect instance
 */
 type AnimationEffect struct {
 	// AnimationEffect's delay.
-	Delay int `json:"delay"`
+	Delay float64 `json:"delay"`
 
 	// AnimationEffect's end delay.
-	EndDelay int `json:"endDelay"`
+	EndDelay float64 `json:"endDelay"`
 
 	// AnimationEffect's iteration start.
-	IterationStart int `json:"iterationStart"`
+	IterationStart float64 `json:"iterationStart"`
 
 	// AnimationEffect's iterations.
-	Iterations int `json:"iterations"`
+	Iterations float64 `json:"iterations"`
 
 	// AnimationEffect's iteration duration.
-	Duration int `json:"duration"`
+	Duration float64 `json:"duration"`
 
 	// AnimationEffect's playback direction.
 	Direction string `json:"direction"`
@@ -95,64 +163,4 @@ type KeyframeStyle struct {
 
 	// AnimationEffect's timing function.
 	Easing string `json:"easing"`
-}
-
-/*
-SetPlaybackRateParams represents Animation.setPaused parameters
-*/
-type SetPlaybackRateParams struct {
-	// Playback rate for animations on page.
-	PlaybackRate int `json:"playbackRate"`
-}
-
-/*
-SetPausedParams represents Animation.setPaused parameters
-*/
-type SetPausedParams struct {
-	// Animations to set the pause state of.
-	Animations []string `json:"animations"`
-
-	// Paused state to set to.
-	Paused bool `json:"paused"`
-}
-
-/*
-SetTimingParams represents Animation.setTiming parameters
-*/
-type SetTimingParams struct {
-	// Animation id.
-	AnimationId string `json:"animationId"`
-
-	// Duration of the animation.
-	Duration int `json:"duration"`
-
-	// Delay of the animation.
-	Delay int `json:"delay"`
-}
-
-/*
-SeekAnimationsParams represents Animation.seekAnimations parameters
-*/
-type SeekAnimationsParams struct {
-	// List of animation ids to seek.
-	Animations []string `json:"animations"`
-
-	// Set the current time of each animation.
-	CurrentTime int `json:"currentTime"`
-}
-
-/*
-ReleaseAnimationsParams represents Animation.releaseAnimations parameters
-*/
-type ReleaseAnimationsParams struct {
-	// List of animation ids to seek.
-	Animations []string `json:"animations"`
-}
-
-/*
-ResolveAnimationParams represents Animation.resolveAnimation parameters
-*/
-type ResolveAnimationParams struct {
-	// Animation id.
-	AnimationId string `json:"animationId"`
 }

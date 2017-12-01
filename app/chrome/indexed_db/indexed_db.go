@@ -1,8 +1,81 @@
-package IndexDB
+package IndexedDB
 
 import (
 	Runtime "app/chrome/runtime"
 )
+
+/*
+clearObjectStoreParams represents IndexedDB.clearObjectStore parameters.
+*/
+type clearObjectStoreParams struct {
+	// Security origin.
+	SecurityOrigin string `json:"securityOrigin"`
+
+	// Database name.
+	DatabaseName string `json:"databaseName"`
+
+	// Object store name.
+	ObjectStoreName string `json:"objectStoreName"`
+}
+
+/*
+DeleteDatabaseParams represents IndexedDB.deleteDatabase parameters.
+*/
+type DeleteDatabaseParams struct {
+	// Security origin.
+	SecurityOrigin string `json:"securityOrigin"`
+
+	// Database name.
+	DatabaseName string `json:"databaseName"`
+
+	// Object store name.
+	ObjectStoreName string `json:"objectStoreName"`
+}
+
+/*
+RequestDataParams represents IndexedDB.requestData parameters.
+*/
+type RequestDataParams struct {
+	// Security origin.
+	SecurityOrigin string `json:"securityOrigin"`
+
+	// Database name.
+	DatabaseName string `json:"databaseName"`
+
+	// Object store name.
+	ObjectStoreName string `json:"objectStoreName"`
+
+	// Index name, empty string for object store data requests.
+	IndexName string `json:"indexName"`
+
+	// Number of records to skip.
+	SkipCount int `json:"skipCount"`
+
+	// Number of records to fetch.
+	PageSize int `json:"pageSize"`
+
+	// Optional. Key range.
+	KeyRange KeyRange `json:"keyRange,omitempty"`
+}
+
+/*
+RequestDatabaseParams represents IndexedDB.requestDatabase parameters.
+*/
+type RequestDatabaseParams struct {
+	// Security origin.
+	SecurityOrigin string `json:"securityOrigin"`
+
+	// Database name.
+	DatabaseName string `json:"databaseName"`
+}
+
+/*
+RequestDatabaseNamesParams represents IndexedDB.requestDatabaseNames parameters.
+*/
+type RequestDatabaseNamesParams struct {
+	// Security origin.
+	SecurityOrigin string `json:"securityOrigin"`
+}
 
 /*
 DatabaseWithObjectStores is a database with an array of object stores.
@@ -60,13 +133,13 @@ type Key struct {
 	Type string `json:"type"`
 
 	// Optional. Number value.
-	Number int `json:"number,omitempty"`
+	Number float64 `json:"number,omitempty"`
 
 	// Optional. String value.
 	String string `json:"string,omitempty"`
 
 	// Optional. Date value.
-	Date int `json:"date,omitempty"`
+	Date float64 `json:"date,omitempty"`
 
 	// Optional. Array value.
 	Array []*Key `json:"array,omitempty"`

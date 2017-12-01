@@ -14,8 +14,8 @@ type PartialAXTreeParams struct {
 	// ID of the node to get the partial accessibility tree for.
 	NodeID DOM.NodeID `json:"nodeId"`
 
-	// Whether to fetch this nodes ancestors, siblings and children. Defaults to true.
-	FetchRelatives bool `json:"fetchRelatives"`
+	// Optional. Whether to fetch this nodes ancestors, siblings and children. Defaults to true.
+	FetchRelatives bool `json:"fetchRelatives,omitempty"`
 }
 
 /*

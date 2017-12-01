@@ -400,14 +400,14 @@ func (DOM) DescribeNode(socket *Socket, params *dom.DescribeNodeParams) error {
 }
 
 /*
-OnDocumentUpdated adds a handler to the Debugger.documentUpdated event. Debugger.documentUpdated
+OnDocumentUpdated adds a handler to the DOM.documentUpdated event. DOM.documentUpdated
 fires when Document has been totally updated. Node IDs are no longer valid.
 */
-func OnDocumentUpdated(socket *Socket, callback func(event *debugger.DocumentUpdatedEvent)) error {
+func (DOM) OnDocumentUpdated(socket *Socket, callback func(event *dom.DocumentUpdatedEvent)) error {
 	handler := protocol.NewEventHandler(
-		"Debugger.documentUpdated",
+		"DOM.documentUpdated",
 		func(name string, params []byte) {
-			event := new(debugger.ResumedEvent)
+			event := new(dom.DocumentUpdatedEvent)
 			if err := json.Unmarshal(params, event); err != nil {
 				log.Error(err)
 			} else {
@@ -420,15 +420,15 @@ func OnDocumentUpdated(socket *Socket, callback func(event *debugger.DocumentUpd
 }
 
 /*
-OnSetChildNodes adds a handler to the Debugger.setChildNodes event. Debugger.setChildNodes fires
+OnSetChildNodes adds a handler to the DOM.setChildNodes event. DOM.setChildNodes fires
 when backend wants to provide client with the missing DOM structure. This happens upon most of the
 calls requesting node IDs.
 */
-func OnSetChildNodes(socket *Socket, callback func(event *debugger.SetChildNodesEvent)) error {
+func (DOM) OnSetChildNodes(socket *Socket, callback func(event *dom.SetChildNodesEvent)) error {
 	handler := protocol.NewEventHandler(
-		"Debugger.setChildNodes",
+		"DOM.setChildNodes",
 		func(name string, params []byte) {
-			event := new(debugger.ResumedEvent)
+			event := new(dom.SetChildNodesEvent)
 			if err := json.Unmarshal(params, event); err != nil {
 				log.Error(err)
 			} else {
@@ -441,14 +441,14 @@ func OnSetChildNodes(socket *Socket, callback func(event *debugger.SetChildNodes
 }
 
 /*
-OnAttributeModified adds a handler to the Debugger.attributeModified event.
-Debugger.attributeModified fires when Element's attribute is modified.
+OnAttributeModified adds a handler to the DOM.attributeModified event. DOM.attributeModified fires
+when Element's attribute is modified.
 */
-func OnAttributeModified(socket *Socket, callback func(event *debugger.AttributeModifiedEvent)) error {
+func (DOM) OnAttributeModified(socket *Socket, callback func(event *dom.AttributeModifiedEvent)) error {
 	handler := protocol.NewEventHandler(
-		"Debugger.attributeModified",
+		"DOM.attributeModified",
 		func(name string, params []byte) {
-			event := new(debugger.ResumedEvent)
+			event := new(dom.AttributeModifiedEvent)
 			if err := json.Unmarshal(params, event); err != nil {
 				log.Error(err)
 			} else {
@@ -461,14 +461,14 @@ func OnAttributeModified(socket *Socket, callback func(event *debugger.Attribute
 }
 
 /*
-OnAttributeRemoved adds a handler to the Debugger.attributeRemoved event.
-Debugger.attributeRemoved fires when Element's attribute is modified.
+OnAttributeRemoved adds a handler to the DOM.attributeRemoved event. DOM.attributeRemoved fires when
+Element's attribute is modified.
 */
-func OnAttributeRemoved(socket *Socket, callback func(event *debugger.AttributeRemovedEvent)) error {
+func (DOM) OnAttributeRemoved(socket *Socket, callback func(event *dom.AttributeRemovedEvent)) error {
 	handler := protocol.NewEventHandler(
-		"Debugger.attributeRemoved",
+		"DOM.attributeRemoved",
 		func(name string, params []byte) {
-			event := new(debugger.ResumedEvent)
+			event := new(dom.AttributeRemovedEvent)
 			if err := json.Unmarshal(params, event); err != nil {
 				log.Error(err)
 			} else {
@@ -481,14 +481,14 @@ func OnAttributeRemoved(socket *Socket, callback func(event *debugger.AttributeR
 }
 
 /*
-OnInlineStyleInvalidated adds a handler to the Debugger.inlineStyleInvalidated event.
-Debugger.inlineStyleInvalidated fires when Element's attribute is removed.
+OnInlineStyleInvalidated adds a handler to the DOM.inlineStyleInvalidated event.
+DOM.inlineStyleInvalidated fires when Element's attribute is removed.
 */
-func OnInlineStyleInvalidated(socket *Socket, callback func(event *debugger.InlineStyleInvalidatedEvent)) error {
+func (DOM) OnInlineStyleInvalidated(socket *Socket, callback func(event *dom.InlineStyleInvalidatedEvent)) error {
 	handler := protocol.NewEventHandler(
-		"Debugger.inlineStyleInvalidated",
+		"DOM.inlineStyleInvalidated",
 		func(name string, params []byte) {
-			event := new(debugger.ResumedEvent)
+			event := new(dom.InlineStyleInvalidatedEvent)
 			if err := json.Unmarshal(params, event); err != nil {
 				log.Error(err)
 			} else {
@@ -502,14 +502,14 @@ func OnInlineStyleInvalidated(socket *Socket, callback func(event *debugger.Inli
 
 
 /*
-OnCharacterDataModified adds a handler to the Debugger.characterDataModified event.
-Debugger.characterDataModified mirrors the DOMCharacterDataModified event.
+OnCharacterDataModified adds a handler to the DOM.characterDataModified event.
+DOM.characterDataModified mirrors the DOMCharacterDataModified event.
 */
-func OnCharacterDataModified(socket *Socket, callback func(event *debugger.CharacterDataModifiedEvent)) error {
+func (DOM) OnCharacterDataModified(socket *Socket, callback func(event *dom.CharacterDataModifiedEvent)) error {
 	handler := protocol.NewEventHandler(
-		"Debugger.characterDataModified",
+		"DOM.characterDataModified",
 		func(name string, params []byte) {
-			event := new(debugger.ResumedEvent)
+			event := new(dom.CharacterDataModifiedEvent)
 			if err := json.Unmarshal(params, event); err != nil {
 				log.Error(err)
 			} else {
@@ -522,14 +522,14 @@ func OnCharacterDataModified(socket *Socket, callback func(event *debugger.Chara
 }
 
 /*
-OnChildNodeCountUpdated adds a handler to the Debugger.childNodeCountUpdated event.
-Debugger.childNodeCountUpdated fires when Container's child node count has changed.
+OnChildNodeCountUpdated adds a handler to the DOM.childNodeCountUpdated event.
+DOM.childNodeCountUpdated fires when Container's child node count has changed.
 */
-func OnChildNodeCountUpdated(socket *Socket, callback func(event *debugger.ChildNodeCountUpdatedEvent)) error {
+func (DOM) OnChildNodeCountUpdated(socket *Socket, callback func(event *dom.ChildNodeCountUpdatedEvent)) error {
 	handler := protocol.NewEventHandler(
-		"Debugger.childNodeCountUpdated",
+		"DOM.childNodeCountUpdated",
 		func(name string, params []byte) {
-			event := new(debugger.ResumedEvent)
+			event := new(dom.ChildNodeCountUpdatedEvent)
 			if err := json.Unmarshal(params, event); err != nil {
 				log.Error(err)
 			} else {
@@ -542,14 +542,14 @@ func OnChildNodeCountUpdated(socket *Socket, callback func(event *debugger.Child
 }
 
 /*
-OnChildNodeInserted adds a handler to the Debugger.childNodeInserted event.
-Debugger.childNodeInserted mirrors the DOMNodeInserted event.
+OnChildNodeInserted adds a handler to the DOM.childNodeInserted event. DOM.childNodeInserted mirrors
+the DOMNodeInserted event.
 */
-func OnChildNodeInserted(socket *Socket, callback func(event *debugger.ChildNodeInsertedEvent)) error {
+func (DOM) OnChildNodeInserted(socket *Socket, callback func(event *dom.ChildNodeInsertedEvent)) error {
 	handler := protocol.NewEventHandler(
-		"Debugger.childNodeInserted",
+		"DOM.childNodeInserted",
 		func(name string, params []byte) {
-			event := new(debugger.ResumedEvent)
+			event := new(dom.ChildNodeInsertedEvent)
 			if err := json.Unmarshal(params, event); err != nil {
 				log.Error(err)
 			} else {
@@ -562,14 +562,14 @@ func OnChildNodeInserted(socket *Socket, callback func(event *debugger.ChildNode
 }
 
 /*
-OnChildNodeRemoved adds a handler to the Debugger.childNodeRemoved event.Debugger.childNodeRemoved
-mirrors the DOMNodeRemoved event.
+OnChildNodeRemoved adds a handler to the DOM.childNodeRemoved event.DOM.childNodeRemoved mirrors the
+DOMNodeRemoved event.
 */
-func OnChildNodeRemoved(socket *Socket, callback func(event *debugger.ChildNodeRemovedEvent)) error {
+func (DOM) OnChildNodeRemoved(socket *Socket, callback func(event *dom.ChildNodeRemovedEvent)) error {
 	handler := protocol.NewEventHandler(
-		"Debugger.childNodeRemoved",
+		"DOM.childNodeRemoved",
 		func(name string, params []byte) {
-			event := new(debugger.ResumedEvent)
+			event := new(dom.ChildNodeRemovedEvent)
 			if err := json.Unmarshal(params, event); err != nil {
 				log.Error(err)
 			} else {
@@ -582,14 +582,14 @@ func OnChildNodeRemoved(socket *Socket, callback func(event *debugger.ChildNodeR
 }
 
 /*
-OnShadowRootPushed adds a handler to the Debugger.shadowRootPushed event. Debugger.shadowRootPushed
-fires when shadow root is pushed into the element. EXPERIMENTAL
+OnShadowRootPushed adds a handler to the DOM.shadowRootPushed event. DOM.shadowRootPushed fires when
+shadow root is pushed into the element. EXPERIMENTAL
 */
-func OnShadowRootPushed(socket *Socket, callback func(event *debugger.ShadowRootPushedEvent)) error {
+func (DOM) OnShadowRootPushed(socket *Socket, callback func(event *dom.ShadowRootPushedEvent)) error {
 	handler := protocol.NewEventHandler(
-		"Debugger.shadowRootPushed",
+		"DOM.shadowRootPushed",
 		func(name string, params []byte) {
-			event := new(debugger.ResumedEvent)
+			event := new(dom.ShadowRootPushedEvent)
 			if err := json.Unmarshal(params, event); err != nil {
 				log.Error(err)
 			} else {
@@ -602,14 +602,14 @@ func OnShadowRootPushed(socket *Socket, callback func(event *debugger.ShadowRoot
 }
 
 /*
-OnShadowRootPopped adds a handler to the Debugger.shadowRootPopped event. Debugger.shadowRootPopped
-fires when shadow root is popped from the element. EXPERIMENTAL
+OnShadowRootPopped adds a handler to the DOM.shadowRootPopped event. DOM.shadowRootPopped fires when
+shadow root is popped from the element. EXPERIMENTAL
 */
-func OnShadowRootPopped(socket *Socket, callback func(event *debugger.ShadowRootPoppedEvent)) error {
+func (DOM) OnShadowRootPopped(socket *Socket, callback func(event *dom.ShadowRootPoppedEvent)) error {
 	handler := protocol.NewEventHandler(
-		"Debugger.shadowRootPopped",
+		"DOM.shadowRootPopped",
 		func(name string, params []byte) {
-			event := new(debugger.ResumedEvent)
+			event := new(dom.ShadowRootPoppedEvent)
 			if err := json.Unmarshal(params, event); err != nil {
 				log.Error(err)
 			} else {
@@ -622,14 +622,14 @@ func OnShadowRootPopped(socket *Socket, callback func(event *debugger.ShadowRoot
 }
 
 /*
-OnPseudoElementAdded adds a handler to the Debugger.pseudoElementAdded event.
-Debugger.pseudoElementAdded fires when a pseudo element is added to an element. EXPERIMENTAL
+OnPseudoElementAdded adds a handler to the DOM.pseudoElementAdded event. DOM.pseudoElementAdded
+fires when a pseudo element is added to an element. EXPERIMENTAL
 */
-func OnPseudoElementAdded(socket *Socket, callback func(event *debugger.PseudoElementAddedEvent)) error {
+func (DOM) OnPseudoElementAdded(socket *Socket, callback func(event *dom.PseudoElementAddedEvent)) error {
 	handler := protocol.NewEventHandler(
-		"Debugger.pseudoElementAdded",
+		"DOM.pseudoElementAdded",
 		func(name string, params []byte) {
-			event := new(debugger.ResumedEvent)
+			event := new(dom.PseudoElementAddedEvent)
 			if err := json.Unmarshal(params, event); err != nil {
 				log.Error(err)
 			} else {
@@ -642,14 +642,14 @@ func OnPseudoElementAdded(socket *Socket, callback func(event *debugger.PseudoEl
 }
 
 /*
-OnPseudoElementRemoved adds a handler to the Debugger.pseudoElementRemoved event.
-Debugger.pseudoElementRemoved fires when a pseudo element is removed from an element. EXPERIMENTAL
+OnPseudoElementRemoved adds a handler to the DOM.pseudoElementRemoved event.
+DOM.pseudoElementRemoved fires when a pseudo element is removed from an element. EXPERIMENTAL
 */
-func OnPseudoElementRemoved(socket *Socket, callback func(event *debugger.PseudoElementRemovedEvent)) error {
+func (DOM) OnPseudoElementRemoved(socket *Socket, callback func(event *dom.PseudoElementRemovedEvent)) error {
 	handler := protocol.NewEventHandler(
-		"Debugger.pseudoElementRemoved",
+		"DOM.pseudoElementRemoved",
 		func(name string, params []byte) {
-			event := new(debugger.ResumedEvent)
+			event := new(dom.PseudoElementRemovedEvent)
 			if err := json.Unmarshal(params, event); err != nil {
 				log.Error(err)
 			} else {
@@ -662,14 +662,14 @@ func OnPseudoElementRemoved(socket *Socket, callback func(event *debugger.Pseudo
 }
 
 /*
-OnDistributedNodesUpdated adds a handler to the Debugger.distributedNodesUpdated event.
-Debugger.distributedNodesUpdated fires when distrubution is changed. EXPERIMENTAL
+OnDistributedNodesUpdated adds a handler to the DOM.distributedNodesUpdated event.
+DOM.distributedNodesUpdated fires when distrubution is changed. EXPERIMENTAL
 */
-func OnDistributedNodesUpdated(socket *Socket, callback func(event *debugger.DistributedNodesUpdatedEvent)) error {
+func (DOM) OnDistributedNodesUpdated(socket *Socket, callback func(event *dom.DistributedNodesUpdatedEvent)) error {
 	handler := protocol.NewEventHandler(
-		"Debugger.distributedNodesUpdated",
+		"DOM.distributedNodesUpdated",
 		func(name string, params []byte) {
-			event := new(debugger.ResumedEvent)
+			event := new(dom.DistributedNodesUpdatedEvent)
 			if err := json.Unmarshal(params, event); err != nil {
 				log.Error(err)
 			} else {
