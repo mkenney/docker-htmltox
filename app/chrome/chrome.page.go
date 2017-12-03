@@ -2,6 +2,9 @@ package chrome
 
 import (
 	"app/chrome/protocol"
+	"encoding/json"
+
+	log "github.com/Sirupsen/logrus"
 )
 
 /*
@@ -85,7 +88,7 @@ func (Page) Disable(socket *Socket) error {
 }
 
 /*
-Ennables page domain notifications.
+Enable Ennables page domain notifications.
 */
 func (Page) Enable(socket *Socket) error {
 	command := &protocol.Command{
@@ -386,5 +389,349 @@ func (Page) StopScreencast(socket *Socket) error {
 		params: nil,
 	}
 	socket.SendCommand(command)
+	return command.Err
+}
+
+/*
+OnDOMContentEventFired adds a handler to the Page.domContentEventFired event.
+Page.domContentEventFired fires when a content event occurs in the DOM.
+*/
+func (Page) OnDOMContentEventFired(socket *Socket, callback func(event *page.DOMContentEventFiredEvent)) error {
+	handler := protocol.NewEventHandler(
+		"Page.domContentEventFired",
+		func(name string, params []byte) {
+			event := &page.DOMContentEventFiredEvent{}
+			if err := json.Unmarshal(params, event); err != nil {
+				log.Error(err)
+			} else {
+				callback(event)
+			}
+		},
+	)
+	socket.AddEventHandler(handler)
+	return command.Err
+}
+
+/*
+OnFrameAttached adds a handler to the Page.frameAttached event. Page.frameAttached fires when a
+frame has been attached to its parent.
+*/
+func (Page) OnFrameAttached(socket *Socket, callback func(event *page.FrameAttachedEvent)) error {
+	handler := protocol.NewEventHandler(
+		"Page.frameAttached",
+		func(name string, params []byte) {
+			event := &page.FrameAttachedEvent{}
+			if err := json.Unmarshal(params, event); err != nil {
+				log.Error(err)
+			} else {
+				callback(event)
+			}
+		},
+	)
+	socket.AddEventHandler(handler)
+	return command.Err
+}
+
+/*
+OnFrameClearedScheduledNavigation adds a handler to the Page.frameClearedScheduledNavigation event.
+Page.frameClearedScheduledNavigation fires when a frame no longer has a scheduled navigation.
+EXPERIMENTAL
+*/
+func (Page) OnFrameClearedScheduledNavigation(socket *Socket, callback func(event *page.FrameClearedScheduledNavigationEvent)) error {
+	handler := protocol.NewEventHandler(
+		"Page.frameClearedScheduledNavigation",
+		func(name string, params []byte) {
+			event := &page.FrameClearedScheduledNavigationEvent{}
+			if err := json.Unmarshal(params, event); err != nil {
+				log.Error(err)
+			} else {
+				callback(event)
+			}
+		},
+	)
+	socket.AddEventHandler(handler)
+	return command.Err
+}
+
+/*
+OnFrameDetached adds a handler to the Page.frameDetached event. Page.frameDetached fires when a
+frame has been detached from its parent.
+*/
+func (Page) OnFrameDetached(socket *Socket, callback func(event *page.FrameDetachedEvent)) error {
+	handler := protocol.NewEventHandler(
+		"Page.frameDetached",
+		func(name string, params []byte) {
+			event := &page.FrameDetachedEvent{}
+			if err := json.Unmarshal(params, event); err != nil {
+				log.Error(err)
+			} else {
+				callback(event)
+			}
+		},
+	)
+	socket.AddEventHandler(handler)
+	return command.Err
+}
+
+/*
+OnFrameNavigated adds a handler to the Page.frameNavigated event. Page.frameNavigated fires once
+navigation of the frame has completed. Frame is now associated with the new loader.
+*/
+func (Page) OnFrameNavigated(socket *Socket, callback func(event *page.FrameNavigatedEvent)) error {
+	handler := protocol.NewEventHandler(
+		"Page.frameNavigated",
+		func(name string, params []byte) {
+			event := &page.FrameNavigatedEvent{}
+			if err := json.Unmarshal(params, event); err != nil {
+				log.Error(err)
+			} else {
+				callback(event)
+			}
+		},
+	)
+	socket.AddEventHandler(handler)
+	return command.Err
+}
+
+/*
+OnFrameResized adds a handler to the Page.frameResized event. Page.frameResized fires when frame
+schedules a potential navigation. EXPERIMENTAL
+*/
+func (Page) OnFrameResized(socket *Socket, callback func(event *page.FrameResizedEvent)) error {
+	handler := protocol.NewEventHandler(
+		"Page.frameResized",
+		func(name string, params []byte) {
+			event := &page.FrameResizedEvent{}
+			if err := json.Unmarshal(params, event); err != nil {
+				log.Error(err)
+			} else {
+				callback(event)
+			}
+		},
+	)
+	socket.AddEventHandler(handler)
+	return command.Err
+}
+
+/*
+OnFrameStartedLoading adds a handler to the Page.frameStartedLoading event. Page.frameStartedLoading
+fires when frame has started loading. EXPERIMENTAL
+*/
+func (Page) OnFrameStartedLoading(socket *Socket, callback func(event *page.FrameStartedLoadingEvent)) error {
+	handler := protocol.NewEventHandler(
+		"Page.frameStartedLoading",
+		func(name string, params []byte) {
+			event := &page.FrameStartedLoadingEvent{}
+			if err := json.Unmarshal(params, event); err != nil {
+				log.Error(err)
+			} else {
+				callback(event)
+			}
+		},
+	)
+	socket.AddEventHandler(handler)
+	return command.Err
+}
+
+/*
+OnFrameStoppedLoading adds a handler to the Page.frameStoppedLoading event. Page.frameStoppedLoading
+fires when frame has stopped loading. EXPERIMENTAL
+*/
+func (Page) OnFrameStoppedLoading(socket *Socket, callback func(event *page.FrameStoppedLoadingEvent)) error {
+	handler := protocol.NewEventHandler(
+		"Page.frameStoppedLoading",
+		func(name string, params []byte) {
+			event := &page.FrameStoppedLoadingEvent{}
+			if err := json.Unmarshal(params, event); err != nil {
+				log.Error(err)
+			} else {
+				callback(event)
+			}
+		},
+	)
+	socket.AddEventHandler(handler)
+	return command.Err
+}
+
+/*
+OnInterstitialHidden adds a handler to the Page.interstitialHidden event. Page.interstitialHidden
+fires when interstitial page was hidden.
+*/
+func (Page) OnInterstitialHidden(socket *Socket, callback func(event *page.InterstitialHiddenEvent)) error {
+	handler := protocol.NewEventHandler(
+		"Page.interstitialHidden",
+		func(name string, params []byte) {
+			event := &page.InterstitialHiddenEvent{}
+			if err := json.Unmarshal(params, event); err != nil {
+				log.Error(err)
+			} else {
+				callback(event)
+			}
+		},
+	)
+	socket.AddEventHandler(handler)
+	return command.Err
+}
+
+/*
+OnInterstitialShown adds a handler to the Page.interstitialShown event. Page.interstitialShown fires
+when interstitial page was shown.
+*/
+func (Page) OnInterstitialShown(socket *Socket, callback func(event *page.InterstitialShownEvent)) error {
+	handler := protocol.NewEventHandler(
+		"Page.interstitialShown",
+		func(name string, params []byte) {
+			event := &page.InterstitialShownEvent{}
+			if err := json.Unmarshal(params, event); err != nil {
+				log.Error(err)
+			} else {
+				callback(event)
+			}
+		},
+	)
+	socket.AddEventHandler(handler)
+	return command.Err
+}
+
+/*
+OnJavascriptDialogClosed adds a handler to the Page.javascriptDialogClosed event.
+Page.javascriptDialogClosed fires when a JavaScript initiated dialog (alert, confirm, prompt, or
+onbeforeunload) has been closed.
+*/
+func (Page) OnJavascriptDialogClosed(socket *Socket, callback func(event *page.JavascriptDialogClosedEvent)) error {
+	handler := protocol.NewEventHandler(
+		"Page.javascriptDialogClosed",
+		func(name string, params []byte) {
+			event := &page.JavascriptDialogClosedEvent{}
+			if err := json.Unmarshal(params, event); err != nil {
+				log.Error(err)
+			} else {
+				callback(event)
+			}
+		},
+	)
+	socket.AddEventHandler(handler)
+	return command.Err
+}
+
+/*
+OnJavascriptDialogOpening adds a handler to the Page.javascriptDialogOpening event.
+Page.javascriptDialogOpening fires when a JavaScript initiated dialog (alert, confirm, prompt, or
+onbeforeunload) is about to open.
+*/
+func (Page) OnJavascriptDialogOpening(socket *Socket, callback func(event *page.JavascriptDialogOpeningEvent)) error {
+	handler := protocol.NewEventHandler(
+		"Page.javascriptDialogOpening",
+		func(name string, params []byte) {
+			event := &page.JavascriptDialogOpeningEvent{}
+			if err := json.Unmarshal(params, event); err != nil {
+				log.Error(err)
+			} else {
+				callback(event)
+			}
+		},
+	)
+	socket.AddEventHandler(handler)
+	return command.Err
+}
+
+/*
+OnLifecycleEvent adds a handler to the Page.lifecycleEvent event. Page.lifecycleEvent fires for top
+level page lifecycle events such as navigation, load, paint, etc.
+*/
+func (Page) OnLifecycleEvent(socket *Socket, callback func(event *page.LifecycleEventEvent)) error {
+	handler := protocol.NewEventHandler(
+		"Page.lifecycleEvent",
+		func(name string, params []byte) {
+			event := &page.LifecycleEventEvent{}
+			if err := json.Unmarshal(params, event); err != nil {
+				log.Error(err)
+			} else {
+				callback(event)
+			}
+		},
+	)
+	socket.AddEventHandler(handler)
+	return command.Err
+}
+
+/*
+OnLoadEventFired adds a handler to the Page.loadEventFired event. Page.loadEventFired fires when the
+page has finished loading.
+*/
+func (Page) OnLoadEventFired(socket *Socket, callback func(event *page.LoadEventFiredEvent)) error {
+	handler := protocol.NewEventHandler(
+		"Page.loadEventFired",
+		func(name string, params []byte) {
+			event := &page.LoadEventFiredEvent{}
+			if err := json.Unmarshal(params, event); err != nil {
+				log.Error(err)
+			} else {
+				callback(event)
+			}
+		},
+	)
+	socket.AddEventHandler(handler)
+	return command.Err
+}
+
+/*
+OnScreencastFrame adds a handler to the Page.screencastFrame event. Page.screencastFrame fires when
+compressed image data is requested by the `startScreencast` method. EXPERIMENTAL
+*/
+func (Page) OnScreencastFrame(socket *Socket, callback func(event *page.ScreencastFrameEvent)) error {
+	handler := protocol.NewEventHandler(
+		"Page.screencastFrame",
+		func(name string, params []byte) {
+			event := &page.ScreencastFrameEvent{}
+			if err := json.Unmarshal(params, event); err != nil {
+				log.Error(err)
+			} else {
+				callback(event)
+			}
+		},
+	)
+	socket.AddEventHandler(handler)
+	return command.Err
+}
+
+/*
+OnScreencastVisibilityChanged adds a handler to the Page.screencastVisibilityChanged event.
+Page.screencastVisibilityChanged fires when the page with currently enabled screencast was shown or
+hidden. EXPERIMENTAL
+*/
+func (Page) OnScreencastVisibilityChanged(socket *Socket, callback func(event *page.ScreencastVisibilityChangedEvent)) error {
+	handler := protocol.NewEventHandler(
+		"Page.screencastVisibilityChanged",
+		func(name string, params []byte) {
+			event := &page.ScreencastVisibilityChangedEvent{}
+			if err := json.Unmarshal(params, event); err != nil {
+				log.Error(err)
+			} else {
+				callback(event)
+			}
+		},
+	)
+	socket.AddEventHandler(handler)
+	return command.Err
+}
+
+/*
+OnWindowOpen adds a handler to the Page.windowOpen event. Page.windowOpen fires when a new window is
+going to be opened, via window.open(), link click, form submission, etc.
+*/
+func (Page) OnWindowOpen(socket *Socket, callback func(event *page.WindowOpenEvent)) error {
+	handler := protocol.NewEventHandler(
+		"Page.windowOpen",
+		func(name string, params []byte) {
+			event := &page.WindowOpenEvent{}
+			if err := json.Unmarshal(params, event); err != nil {
+				log.Error(err)
+			} else {
+				callback(event)
+			}
+		},
+	)
+	socket.AddEventHandler(handler)
 	return command.Err
 }

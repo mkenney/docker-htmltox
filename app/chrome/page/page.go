@@ -1,6 +1,7 @@
 package Page
 
 import (
+	Runtime "app/chrome/runtime"
 	"fmt"
 )
 
@@ -23,17 +24,17 @@ type AddScriptToEvaluateOnNewDocumentParams struct {
 CaptureScreenshotParams represents Page.captureScreenshot parameters.
 */
 type CaptureScreenshotParams struct {
-	// Image compression format (defaults to png). Allowed values: jpeg, png.
-	Format string `json:"format"`
+	// Optional. Image compression format (defaults to png). Allowed values: jpeg, png.
+	Format string `json:"format,omitempty"`
 
-	// Compression quality from range [0..100] (jpeg only).
-	Quality int `json:"quality"`
+	// Optional. Compression quality from range [0..100] (jpeg only).
+	Quality int `json:"quality,omitempty"`
 
-	// Capture the screenshot of a given region only.
-	Clip Viewport `json:"clip"`
+	// Optional. Capture the screenshot of a given region only.
+	Clip Viewport `json:"clip,omitempty"`
 
-	// Capture the screenshot from the surface, rather than the view. Defaults to true. EXPERIMENTAL
-	FromSurface bool `json:"fromSurface"`
+	// Optional. Capture the screenshot from the surface, rather than the view. Defaults to true. EXPERIMENTAL
+	FromSurface bool `json:"fromSurface,omitempty"`
 }
 
 /*
@@ -43,11 +44,12 @@ type CreateIsolatedWorldParams struct {
 	// ID of the frame in which the isolated world should be created.
 	FrameID FrameID `json:"frameId"`
 
-	// An optional name which is reported in the Execution Context.
-	WorldName string `json:"worldName"`
+	// Optional. An optional name which is reported in the Execution Context.
+	WorldName string `json:"worldName,omitempty"`
 
-	// Whether or not universal access should be granted to the isolated world. This is a powerful option, use with caution.
-	GrantUniveralAccess bool `json:"grantUniveralAccess"`
+	// Optional. Whether or not universal access should be granted to the isolated world. This is a
+	// powerful option, use with caution.
+	GrantUniveralAccess bool `json:"grantUniveralAccess,omitempty"`
 }
 
 /*
@@ -60,8 +62,8 @@ type GetAppManifestParams struct {
 	// Errors.
 	Errors []AppManifestError `json:"errors"`
 
-	// Manifest content.
-	Data string `json:"data"`
+	// Optional. Manifest content.
+	Data string `json:"data,omitempty"`
 }
 
 /*
@@ -123,9 +125,9 @@ type HandleJavaScriptDialogParams struct {
 	// Whether to accept or dismiss the dialog.
 	Accept bool `json:"accept"`
 
-	// The text to enter into the dialog prompt before accepting. Used only if this is a prompt
-	// dialog.
-	PromptText string `json:"promptText"`
+	// Optional. The text to enter into the dialog prompt before accepting. Used only if this is a
+	// prompt dialog.
+	PromptText string `json:"promptText,omitempty"`
 }
 
 /*
@@ -135,11 +137,11 @@ type NavigateParams struct {
 	// URL to navigate the page to.
 	URL string `json:"url"`
 
-	// Referrer URL.
-	Referrer string `json:"referrer"`
+	// Optional. Referrer URL.
+	Referrer string `json:"referrer,omitempty"`
 
-	// Intended transition type.
-	TransitionType TransitionType `json:"transitionType"`
+	// Optional. Intended transition type.
+	TransitionType TransitionType `json:"transitionType,omitempty"`
 }
 
 /*
@@ -154,54 +156,55 @@ type NavigateToHistoryEntryParams struct {
 PrintToPDFParams represents Page.printToPDF parameters.
 */
 type PrintToPDFParams struct {
-	// Paper orientation. Defaults to false.
-	Landscape bool `json:"landscape"`
+	// Optional. Paper orientation. Defaults to false.
+	Landscape bool `json:"landscape,omitempty"`
 
-	// Display header and footer. Defaults to false.
-	DisplayHeaderFooter bool `json:"displayHeaderFooter"`
+	// Optional. Display header and footer. Defaults to false.
+	DisplayHeaderFooter bool `json:"displayHeaderFooter,omitempty"`
 
-	// Print background graphics. Defaults to false.
-	PrintBackground bool `json:"printBackground"`
+	// Optional. Print background graphics. Defaults to false.
+	PrintBackground bool `json:"printBackground,omitempty"`
 
-	// Scale of the webpage rendering. Defaults to 1.
-	Scale float64 `json:"scale"`
+	// Optional. Scale of the webpage rendering. Defaults to 1.
+	Scale float64 `json:"scale,omitempty"`
 
-	// Paper width in inches. Defaults to 8.5 inches.
-	PaperWidth float64 `json:"paperWidth"`
+	// Optional. Paper width in inches. Defaults to 8.5 inches.
+	PaperWidth float64 `json:"paperWidth,omitempty"`
 
-	// Paper height in inches. Defaults to 11 inches.
-	PaperHeight float64 `json:"paperHeight"`
+	// Optional. Paper height in inches. Defaults to 11 inches.
+	PaperHeight float64 `json:"paperHeight,omitempty"`
 
-	// Top margin in inches. Defaults to 1cm (~0.4 inches).
-	MarginTop float64 `json:"marginTop"`
+	// Optional. Top margin in inches. Defaults to 1cm (~0.4 inches).
+	MarginTop float64 `json:"marginTop,omitempty"`
 
-	// Bottom margin in inches. Defaults to 1cm (~0.4 inches).
-	MarginBottom float64 `json:"marginBottom"`
+	// Optional. Bottom margin in inches. Defaults to 1cm (~0.4 inches).
+	MarginBottom float64 `json:"marginBottom,omitempty"`
 
-	// Left margin in inches. Defaults to 1cm (~0.4 inches).
-	MarginLeft float64 `json:"marginLeft"`
+	// Optional. Left margin in inches. Defaults to 1cm (~0.4 inches).
+	MarginLeft float64 `json:"marginLeft,omitempty"`
 
-	// Right margin in inches. Defaults to 1cm (~0.4 inches).
-	MarginRight float64 `json:"marginRight"`
+	// Optional. Right margin in inches. Defaults to 1cm (~0.4 inches).
+	MarginRight float64 `json:"marginRight,omitempty"`
 
-	// Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which means print
-	// all pages.
-	PageRanges string `json:"pageRanges"`
+	// Optional. Paper ranges to print, e.g., '1-5, 8, 11-13'. Defaults to the empty string, which
+	// means print all pages.
+	PageRanges string `json:"pageRanges,omitempty"`
 
-	// Whether to silently ignore invalid but successfully parsed page ranges, such as '3-2'.
-	// Defaults to false.
-	IgnoreInvalidPageRanges bool `json:"ignoreInvalidPageRanges"`
+	// Optional. Whether to silently ignore invalid but successfully parsed page ranges, such as
+	// '3-2'. Defaults to false.
+	IgnoreInvalidPageRanges bool `json:"ignoreInvalidPageRanges,omitempty"`
 }
 
 /*
 ReloadParams represents Page.reload parameters.
 */
 type ReloadParams struct {
-	// If true, browser cache is ignored (as if the user pressed Shift+refresh).
-	IgnoreCache bool `json:"ignoreCache"`
+	// Optional. If true, browser cache is ignored (as if the user pressed Shift+refresh).
+	IgnoreCache bool `json:"ignoreCache,omitempty"`
 
-	// If set, the script will be injected into all frames of the inspected page after reload.
-	ScriptToEvaluateOnLoad string `json:"scriptToEvaluateOnLoad"`
+	// Optional. If set, the script will be injected into all frames of the inspected page after
+	// reload.
+	ScriptToEvaluateOnLoad string `json:"scriptToEvaluateOnLoad,omitempty"`
 }
 
 /*
@@ -245,11 +248,11 @@ type SearchInResourceParams struct {
 	// String to search for.
 	Query string `json:"query"`
 
-	// If true, search is case sensitive.
-	CaseSensitive bool `json:"caseSensitive"`
+	// Optional. If true, search is case sensitive.
+	CaseSensitive bool `json:"caseSensitive,omitempty"`
 
-	// If true, treats string parameter as regex.
-	IsRegex bool `json:"isRegex"`
+	// Optional. If true, treats string parameter as regex.
+	IsRegex bool `json:"isRegex,omitempty"`
 }
 
 /*
@@ -287,8 +290,9 @@ type SetDownloadBehaviorParams struct {
 	// available (otherwise deny). Allowed values: deny, allow, default.
 	Behavior string `json:"behavior"`
 
-	// The default path to save downloaded files to. This is requred if behavior is set to 'allow'.
-	DownloadPath string `json:"downloadPath"`
+	// Optional. The default path to save downloaded files to. This is requred if behavior is set to
+	// 'allow'.
+	DownloadPath string `json:"downloadPath,omitempty"`
 }
 
 /*
@@ -303,23 +307,219 @@ type SetLifecycleEventsEnabledParams struct {
 StartScreencastParams represents Page.startScreencast parameters.
 */
 type StartScreencastParams struct {
-	// Image compression format. Allowed values: jpeg, png.
-	Format string `json:"format"`
+	// Optional. Image compression format. Allowed values: jpeg, png.
+	Format string `json:"format,omitempty"`
 
-	// Compression quality from range [0..100].
-	Quality int `json:"quality"`
+	// Optional. Compression quality from range [0..100].
+	Quality int `json:"quality,omitempty"`
 
-	// Maximum screenshot width.
-	MaxWidth int `json:"maxWidth"`
+	// Optional. Maximum screenshot width.
+	MaxWidth int `json:"maxWidth,omitempty"`
 
-	// Maximum screenshot height.
-	MaxHeight int `json:"maxHeight"`
+	// Optional. Maximum screenshot height.
+	MaxHeight int `json:"maxHeight,omitempty"`
 
-	// Send every n-th frame.
-	EveryNthFrame int `json:"everyNthFrame"`
+	// Optional. Send every n-th frame.
+	EveryNthFrame int `json:"everyNthFrame,omitempty"`
+}
+
+/*
+DOMContentEventFiredEvent represents Page.domContentEventFired event data.
+*/
+type DOMContentEventFiredEvent struct {
+	Timestamp MonotonicTime `json:"timestamp"`
+}
+
+/*
+FrameAttachedEvent represents Page.frameAttached event data.
+*/
+type FrameAttachedEvent struct {
+	// ID of the frame that has been attached.
+	FrameID FrameID `json:"frameId"`
+
+	// Parent frame identifier.
+	ParentFrameID FrameID `json:"parentFrameId"`
+
+	// Optional. JavaScript stack trace of when frame was attached, only set if frame initiated from
+	// script.
+	Stack Runtime.StackTrace `json:"stack,omitempty"`
+}
+
+/*
+FrameClearedScheduledNavigationEvent represents Page.frameClearedScheduledNavigation event
+data.
+*/
+type FrameClearedScheduledNavigationEvent struct {
+	// ID of the frame that has cleared its scheduled navigation.
+	FrameID FrameID `json:"frameId"`
+}
+
+/*
+FrameDetachedEvent represents Page.frameDetached event data.
+*/
+type FrameDetachedEvent struct {
+	// ID of the frame that has been detached.
+	FrameID FrameID `json:"frameId"`
+}
+
+/*
+FrameNavigatedEvent represents Page.frameNavigated event data.
+*/
+type FrameNavigatedEvent struct {
+	// Frame object.
+	Frame Frame `json:"frame"`
+}
+
+/*
+FrameScheduledNavigationEvent represents Page.frameScheduledNavigation event data.
+*/
+type FrameScheduledNavigationEvent struct {
+	// ID of the frame that has scheduled a navigation.
+	FrameID FrameID `json:"frameId"`
+
+	// Delay (in seconds) until the navigation is scheduled to begin. The navigation is not
+	// guaranteed to start.
+	Delay number `json:"delay"`
+
+	// The reason for the navigation. Allowed values: formSubmissionGet, formSubmissionPost,
+	// httpHeaderRefresh, scriptInitiated, metaTagRefresh, pageBlockInterstitial, reload.
+	Reason string `json:"reason"`
+
+	// The destination URL for the scheduled navigation.
+	URL string `json:"url"`
+}
+
+/*
+FrameStartedLoadingEvent represents Page.frameStartedLoading event data.
+*/
+type FrameStartedLoadingEvent struct {
+	// ID of the frame that has started loading.
+	FrameID FrameID `json:"frameId"`
+}
+
+/*
+FrameStoppedLoadingEvent represents Page.frameStoppedLoading event data.
+*/
+type FrameStoppedLoadingEvent struct {
+	// ID of the frame that has stopped loading.
+	FrameID FrameID `json:"frameId"`
+}
+
+/*
+InterstitialHiddenEvent represents Page.interstitialHidden event data.
+*/
+type InterstitialHiddenEvent struct{}
+
+/*
+InterstitialShownEvent represents Page.interstitialShown event data.
+*/
+type InterstitialShownEvent struct{}
+
+/*
+JavascriptDialogClosedEvent represents Page.javascriptDialogClosed event data.
+*/
+type JavascriptDialogClosedEvent struct {
+	// Whether dialog was confirmed.
+	Result bool `json:"result"`
+
+	// User input in case of prompt.
+	UserInput string `json:"userInput"`
+}
+
+/*
+JavascriptDialogOpeningEvent represents Page.javascriptDialogOpening event data.
+*/
+type JavascriptDialogOpeningEvent struct {
+	// Frame url.
+	URL string `json:"url"`
+
+	// Message that will be displayed by the dialog.
+	Message string `json:"message"`
+
+	// Dialog type.
+	Type DialogType `json:"type"`
+
+	// Optional. Default dialog prompt.
+	DefaultPrompt string `json:"defaultPrompt,omitempty"`
+}
+
+/*
+LifecycleEventEvent represents Page.lifecycleEvent event data.
+*/
+type LifecycleEventEvent struct {
+	// ID of the frame.
+	FrameID FrameID `json:"frameId"`
+
+	// Loader identifier. Empty string if the request is fetched from worker.
+	LoaderID LoaderID `json:"loaderId"`
+
+	// name.
+	Name string `json:"name"`
+
+	// timestamp.
+	Timestamp MonotonicTime `json:"timestamp"`
+}
+
+/*
+LoadEventFiredEvent represents Page.loadEventFired event data.
+*/
+type LoadEventFiredEvent struct {
+	// timestamp.
+	Timestamp MonotonicTime `json:"timestamp"`
+}
+
+/*
+ScreencastFrameEvent represents Page.screencastFrame event data.
+*/
+type ScreencastFrameEvent struct {
+	// Base64-encoded compressed image.
+	Data string `json:"data"`
+
+	// Screencast frame metadata.
+	Metadata ScreencastFrameMetadata `json:"metadata"`
+
+	// Frame number.
+	SessionID int `json:"sessionId"`
+}
+
+/*
+ScreencastVisibilityChangedEvent represents Page.screencastVisibilityChanged event data.
+*/
+type ScreencastVisibilityChangedEvent struct {
+	// True if the page is visible.
+	Visible bool `json:"visible"`
+}
+
+/*
+WindowOpenEvent represents Page.windowOpen event data.
+*/
+type WindowOpenEvent struct {
+	// The URL for the new window.
+	URL string `json:"url"`
+
+	// Window name.
+	WindowName string `json:"windowName"`
+
+	// An array of enabled window features.
+	WindowFeatures []string `json:"windowFeatures"`
+
+	// Whether or not it was triggered by user gesture.
+	UserGesture boolean `json:"userGesture"`
 }
 
 //////////////////////////////////////
+
+/*
+LoaderID is the Unique loader identifier.
+This is a duplicate of Network.LoaderID to avoid an invalid import cycle
+*/
+type LoaderID string
+
+/*
+MonotonicTime is the monotonically increasing time in seconds since an arbitrary point in the past.
+This is a duplicate of Network.MonotonicTime to avoid an invalid import cycle
+*/
+type MonotonicTime int
 
 /*
 Rect defines a rectangle.

@@ -143,7 +143,7 @@ type SetSuspendedParams struct {
 }
 
 /*
-InspectNodeRequestedEvent represents LayerTree.inspectNodeRequested event data.
+InspectNodeRequestedEvent represents Overlay.inspectNodeRequested event data.
 */
 type InspectNodeRequestedEvent struct {
 	// ID of the node to inspect.
@@ -151,7 +151,7 @@ type InspectNodeRequestedEvent struct {
 }
 
 /*
-NodeHighlightRequestedEvent represents LayerTree.nodeHighlightRequested event data.
+NodeHighlightRequestedEvent represents Overlay.nodeHighlightRequested event data.
 */
 type NodeHighlightRequestedEvent struct {
 	// ID of the node to highlight.
@@ -159,7 +159,7 @@ type NodeHighlightRequestedEvent struct {
 }
 
 /*
-ScreenshotRequestedEvent represents LayerTree.screenshotRequested event data.
+ScreenshotRequestedEvent represents Overlay.screenshotRequested event data.
 */
 type ScreenshotRequestedEvent struct {
 	// Viewport to capture, in CSS.
