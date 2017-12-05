@@ -17,7 +17,7 @@ func init() {
 }
 
 /*
-The App struct contains HTTP and SQL helper functions and manages pointers to those resources
+API contains HTTP and SQL helper functions and manages pointers to those resources
 */
 type API struct {
 	router *mux.Router
@@ -52,11 +52,17 @@ func (a *API) Handle(method, path string, handler func(http.ResponseWriter, *htt
 	return a.router.HandleFunc(path, wrapper)
 }
 
+/*
+RespondWithError returns the standard API error respoinse
+*/
 func (a *API) RespondWithError(response http.ResponseWriter, code int, message string) {
 	log.Errorf("An error occourred with a request - %d: %s", code, message)
 	a.RespondWithJSON(response, code, []string{message})
 }
 
+/*
+RespondWithJSON returns the standard API JSON respoinse
+*/
 func (a *API) RespondWithJSON(response http.ResponseWriter, code int, payload interface{}) {
 	jsonData, _ := json.Marshal(payload)
 	log.Printf("Success - %d", code)
@@ -66,6 +72,9 @@ func (a *API) RespondWithJSON(response http.ResponseWriter, code int, payload in
 	response.Write(jsonData)
 }
 
+/*
+RespondWithHTML returns the standard API HTML respoinse
+*/
 func (a *API) RespondWithHTML(response http.ResponseWriter, code int, payload string) {
 	log.Printf("Success - %d", code)
 	response.Header().Set("Access-Control-Allow-Origin", "*")
@@ -74,6 +83,9 @@ func (a *API) RespondWithHTML(response http.ResponseWriter, code int, payload st
 	response.Write([]byte(payload))
 }
 
+/*
+RespondWithImage returns a raw binary image
+*/
 func (a *API) RespondWithImage(response http.ResponseWriter, code int, payload string, format string) {
 	var contentType string
 	if "png" == format {
