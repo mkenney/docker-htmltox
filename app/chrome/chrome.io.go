@@ -16,7 +16,7 @@ Close closes the stream and discards any temporary backing storage.
 */
 func (IO) Close(
 	socket *Socket,
-	params *io.CloseParams
+	params *io.CloseParams,
 ) (nil, error) {
 	command := &protocol.Command{
 		method: "IO.close",
@@ -31,7 +31,7 @@ Read reads a chunk of the stream.
 */
 func (IO) Read(
 	socket *Socket,
-	params *io.ReadParams
+	params *io.ReadParams,
 ) (io.ReadResult, error) {
 	command := &protocol.Command{
 		method: "IO.read",
@@ -46,7 +46,7 @@ ResolveBlob returns the UUID of Blob object specified by a remote object id.
 */
 func (IO) ResolveBlob(
 	socket *Socket,
-	params *io.ResolveBlobParams
+	params *io.ResolveBlobParams,
 ) (io.ResolveBlobResult, error) {
 	command := &protocol.Command{
 		method: "IO.resolveBlob",

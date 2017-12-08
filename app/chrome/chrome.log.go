@@ -59,7 +59,7 @@ StartViolationsReport starts violation reporting.
 */
 func (Log) StartViolationsReport(
 	socket *Socket,
-	params *chrome_log.StartViolationsReportParams
+	params *chrome_log.StartViolationsReportParams,
 ) (nil, error) {
 	command := &protocol.Command{
 		method: "Log.startViolationsReport",

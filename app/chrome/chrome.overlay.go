@@ -44,7 +44,7 @@ GetHighlightObjectForTest is for testing.
 */
 func (Overlay) GetHighlightObjectForTest(
 	socket *Socket,
-	params *overlay.GetHighlightObjectForTestParams
+	params *overlay.GetHighlightObjectForTestParams,
 ) (overlay.GetHighlightObjectForTestResult, error) {
 	command := &protocol.Command{
 		method: "Overlay.getHighlightObjectForTest",
@@ -72,7 +72,7 @@ HighlightFrame highlights owner element of the frame with given ID.
 */
 func (Overlay) HighlightFrame(
 	socket *Socket,
-	params *overlay.HighlightFrameParams
+	params *overlay.HighlightFrameParams,
 ) (nil, error) {
 	command := &protocol.Command{
 		method: "Overlay.highlightFrame",
@@ -88,7 +88,7 @@ nodeID or objectID must be specified.
 */
 func (Overlay) HighlightNode(
 	socket *Socket,
-	params *overlay.HighlightNodeParams
+	params *overlay.HighlightNodeParams,
 ) (nil, error) {
 	command := &protocol.Command{
 		method: "Overlay.highlightNode",
@@ -104,7 +104,7 @@ viewport.
 */
 func (Overlay) HighlightQuad(
 	socket *Socket,
-	params *overlay.HighlightQuadParams
+	params *overlay.HighlightQuadParams,
 ) (nil, error) {
 	command := &protocol.Command{
 		method: "Overlay.highlightQuad",
@@ -120,7 +120,7 @@ viewport.
 */
 func (Overlay) HighlightRect(
 	socket *Socket,
-	params *overlay.HighlightRectParams
+	params *overlay.HighlightRectParams,
 ) (nil, error) {
 	command := &protocol.Command{
 		method: "Overlay.highlightRect",
@@ -136,7 +136,7 @@ highlighted. Backend then generates 'inspectNodeRequested' event upon element se
 */
 func (Overlay) SetInspectMode(
 	socket *Socket,
-	params *overlay.SetInspectModeParams
+	params *overlay.SetInspectModeParams,
 ) (nil, error) {
 	command := &protocol.Command{
 		method: "Overlay.setInspectMode",
@@ -151,7 +151,7 @@ SetPausedInDebuggerMessage sets the paused message
 */
 func (Overlay) SetPausedInDebuggerMessage(
 	socket *Socket,
-	params *overlay.SetPausedInDebuggerMessageParams
+	params *overlay.SetPausedInDebuggerMessageParams,
 ) (nil, error) {
 	command := &protocol.Command{
 		method: "Overlay.setPausedInDebuggerMessage",
@@ -166,7 +166,7 @@ SetShowDebugBorders requests that backend shows debug borders on layers.
 */
 func (Overlay) SetShowDebugBorders(
 	socket *Socket,
-	params *overlay.SetShowDebugBordersParams
+	params *overlay.SetShowDebugBordersParams,
 ) (nil, error) {
 	command := &protocol.Command{
 		method: "Overlay.setShowDebugBorders",
@@ -181,7 +181,7 @@ SetShowFPSCounter requests that backend shows the FPS counter.
 */
 func (Overlay) SetShowFPSCounter(
 	socket *Socket,
-	params *overlay.SetShowFPSCounterParams
+	params *overlay.SetShowFPSCounterParams,
 ) (nil, error) {
 	command := &protocol.Command{
 		method: "Overlay.setShowFPSCounter",
@@ -196,7 +196,7 @@ SetShowScrollBottleneckRects requests that backend shows scroll bottleneck rects
 */
 func (Overlay) SetShowScrollBottleneckRects(
 	socket *Socket,
-	params *overlay.SetShowScrollBottleneckRectsParams
+	params *overlay.SetShowScrollBottleneckRectsParams,
 ) (nil, error) {
 	command := &protocol.Command{
 		method: "Overlay.setShowScrollBottleneckRects",
@@ -211,7 +211,7 @@ SetShowViewportSizeOnResize paints viewport size upon main frame resize.
 */
 func (Overlay) SetShowViewportSizeOnResize(
 	socket *Socket,
-	params *overlay.SetShowViewportSizeOnResizeParams
+	params *overlay.SetShowViewportSizeOnResizeParams,
 ) (nil, error) {
 	command := &protocol.Command{
 		method: "Overlay.setShowViewportSizeOnResize",
@@ -226,7 +226,7 @@ SetSuspended sets the suspended state
 */
 func (Overlay) SetSuspended(
 	socket *Socket,
-	params *overlay.SetSuspendedParams
+	params *overlay.SetSuspendedParams,
 ) (nil, error) {
 	command := &protocol.Command{
 		method: "Overlay.setSuspended",
