@@ -1,6 +1,7 @@
 package chrome
 
 import (
+	layer_tree "app/chrome/layer_tree"
 	"app/chrome/protocol"
 	"encoding/json"
 
@@ -21,8 +22,8 @@ func (LayerTree) CompositingReasons(
 	params *layer_tree.CompositingReasonsParams,
 ) (layer_tree.CompositingReasonsResult, error) {
 	command := &protocol.Command{
-		method: "LayerTree.compositingReasons",
-		params: params,
+		Method: "LayerTree.compositingReasons",
+		Params: params,
 	}
 	socket.SendCommand(command)
 	return command.Result.(layer_tree.CompositingReasonsResult), command.Err
@@ -33,13 +34,12 @@ Disable disables compositing tree inspection.
 */
 func (LayerTree) Disable(
 	socket *Socket,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "LayerTree.disable",
-		params: params,
+		Method: "LayerTree.disable",
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -47,13 +47,12 @@ Enable enables compositing tree inspection.
 */
 func (LayerTree) Enable(
 	socket *Socket,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "LayerTree.enable",
-		params: params,
+		Method: "LayerTree.enable",
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -64,8 +63,8 @@ func (LayerTree) LoadSnapshot(
 	params *layer_tree.LoadSnapshotParams,
 ) (layer_tree.LoadSnapshotResult, error) {
 	command := &protocol.Command{
-		method: "LayerTree.loadSnapshot",
-		params: params,
+		Method: "LayerTree.loadSnapshot",
+		Params: params,
 	}
 	socket.SendCommand(command)
 	return command.Result.(layer_tree.LoadSnapshotResult), command.Err
@@ -79,8 +78,8 @@ func (LayerTree) MakeSnapshot(
 	params *layer_tree.MakeSnapshotParams,
 ) (layer_tree.MakeSnapshotResult, error) {
 	command := &protocol.Command{
-		method: "LayerTree.makeSnapshot",
-		params: params,
+		Method: "LayerTree.makeSnapshot",
+		Params: params,
 	}
 	socket.SendCommand(command)
 	return command.Result.(layer_tree.MakeSnapshotResult), command.Err
@@ -94,8 +93,8 @@ func (LayerTree) ProfileSnapshot(
 	params *layer_tree.ProfileSnapshotParams,
 ) (layer_tree.ProfileSnapshotResult, error) {
 	command := &protocol.Command{
-		method: "LayerTree.profileSnapshot",
-		params: params,
+		Method: "LayerTree.profileSnapshot",
+		Params: params,
 	}
 	socket.SendCommand(command)
 	return command.Result.(layer_tree.ProfileSnapshotResult), command.Err
@@ -107,13 +106,13 @@ ReleaseSnapshot releases layer snapshot captured by the back-end.
 func (LayerTree) ReleaseSnapshot(
 	socket *Socket,
 	params *layer_tree.ReleaseSnapshotParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "LayerTree.releaseSnapshot",
-		params: params,
+		Method: "LayerTree.releaseSnapshot",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -124,8 +123,8 @@ func (LayerTree) ReplaySnapshot(
 	params *layer_tree.ReplaySnapshotParams,
 ) (layer_tree.ReplaySnapshotResult, error) {
 	command := &protocol.Command{
-		method: "LayerTree.replaySnapshot",
-		params: params,
+		Method: "LayerTree.replaySnapshot",
+		Params: params,
 	}
 	socket.SendCommand(command)
 	return command.Result.(layer_tree.ReplaySnapshotResult), command.Err
@@ -139,8 +138,8 @@ func (LayerTree) SnapshotCommandLog(
 	params *layer_tree.SnapshotCommandLogParams,
 ) (layer_tree.SnapshotCommandLogResult, error) {
 	command := &protocol.Command{
-		method: "LayerTree.snapshotCommandLog",
-		params: params,
+		Method: "LayerTree.snapshotCommandLog",
+		Params: params,
 	}
 	socket.SendCommand(command)
 	return command.Result.(layer_tree.SnapshotCommandLogResult), command.Err

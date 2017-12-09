@@ -2,6 +2,7 @@ package chrome
 
 import (
 	"app/chrome/protocol"
+	storage "app/chrome/storage"
 	"encoding/json"
 
 	log "github.com/Sirupsen/logrus"
@@ -19,13 +20,13 @@ ClearDataForOrigin clears storage for origin.
 func (Storage) ClearDataForOrigin(
 	socket *Socket,
 	params *storage.ClearDataForOriginParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "storage.clearDataForOrigin",
-		params: params,
+		Method: "storage.clearDataForOrigin",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -36,8 +37,8 @@ func (Storage) GetUsageAndQuota(
 	params *storage.GetUsageAndQuotaParams,
 ) (storage.GetUsageAndQuotaResult, error) {
 	command := &protocol.Command{
-		method: "storage.getUsageAndQuota",
-		params: params,
+		Method: "storage.getUsageAndQuota",
+		Params: params,
 	}
 	socket.SendCommand(command)
 	return command.Result.(storage.GetUsageAndQuotaResult), command.Err
@@ -50,13 +51,13 @@ storage list.
 func (Storage) TrackCacheStorageForOrigin(
 	socket *Socket,
 	params *storage.TrackCacheStorageForOriginParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "storage.trackCacheStorageForOrigin",
-		params: params,
+		Method: "storage.trackCacheStorageForOrigin",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -65,13 +66,13 @@ TrackIndexedDBForOrigin registers origin to be notified when an update occurs to
 func (Storage) TrackIndexedDBForOrigin(
 	socket *Socket,
 	params *storage.TrackIndexedDBForOriginParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "storage.trackIndexedDBForOrigin",
-		params: params,
+		Method: "storage.trackIndexedDBForOrigin",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -80,13 +81,13 @@ UntrackCacheStorageForOrigin unregisters origin from receiving notifications for
 func (Storage) UntrackCacheStorageForOrigin(
 	socket *Socket,
 	params *storage.UntrackCacheStorageForOriginParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "storage.untrackCacheStorageForOrigin",
-		params: params,
+		Method: "storage.untrackCacheStorageForOrigin",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -95,13 +96,13 @@ UntrackIndexedDBForOrigin unregisters origin from receiving notifications for In
 func (Storage) UntrackIndexedDBForOrigin(
 	socket *Socket,
 	params *storage.UntrackIndexedDBForOriginParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "storage.untrackIndexedDBForOrigin",
-		params: params,
+		Method: "storage.untrackIndexedDBForOrigin",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*

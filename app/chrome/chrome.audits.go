@@ -1,6 +1,9 @@
 package chrome
 
-import "app/chrome/protocol"
+import (
+	audits "app/chrome/audits"
+	"app/chrome/protocol"
+)
 
 /*
 Audits - https://chromedevtools.github.io/devtools-protocol/tot/Audits/
@@ -17,8 +20,8 @@ func (Audits) GetEncodedResponse(
 	params *audits.GetEncodedResponseParams,
 ) (audits.GetEncodedResponseResult, error) {
 	command := &protocol.Command{
-		method: "Audits.getEncodedResponse",
-		params: params,
+		Method: "Audits.getEncodedResponse",
+		Params: params,
 	}
 	socket.SendCommand(command)
 	return command.Result.(audits.GetEncodedResponseResult), command.Err

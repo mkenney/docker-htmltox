@@ -27,26 +27,21 @@ RUN echo $TIMEZONE > /etc/timezone \
 # Install Chrome
 ARG CHROME_VERSION="google-chrome-stable"
 ARG CHROME_DRIVER_VERSION="latest"
-RUN groupadd -r chrome \
-    && useradd -r -g chrome -G audio,video chrome --shell /bin/bash \
-    && mkdir -p /home/chrome && chown -R chrome:chrome /home/chrome \
-    && echo 'chrome:chrome' | chpasswd \
-    && echo 'alias ll="ls -laF"' >> /home/chrome/.bashrc \
-    && echo 'alias e="exit"' >> /home/chrome/.bashrc \
-    && echo 'alias cls="clear"' >> /home/chrome/.bashrc \
-    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
-    && apt-get -qqy update \
-    && apt-get -qqy --no-install-recommends install ${CHROME_VERSION:-google-chrome-stable}
-
-# Cleanup
-RUN rm /etc/apt/sources.list.d/google.list \
-    && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+#RUN groupadd -r chrome \
+#    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+#    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
+#    && apt-get -qqy update \
+#    && apt-get -qqy --no-install-recommends install ${CHROME_VERSION:-google-chrome-stable}
+#
+## Cleanup
+#RUN rm /etc/apt/sources.list.d/google.list \
+#    && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 # Install htmltox
 COPY ./app /go/src/app
-RUN cd /go/src/app \
-    && dep ensure \
+RUN set -x \
+    && cd /go/src/app \
+    #&& dep ensure \
     && go build -o /go/bin/app
 
 # Grant the process permission to bind to port 80
@@ -55,5 +50,4 @@ RUN setcap 'cap_net_bind_service=+ep' /go/bin/app
 WORKDIR /go/src/app
 EXPOSE 80
 EXPOSE 9222
-#USER chrome
 CMD /go/bin/app

@@ -5,7 +5,6 @@ Chrome browser
 package htmltox
 
 import (
-	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
@@ -26,7 +25,7 @@ func init() {
 HTMLToX defines the struct for the HTML conversion API service
 */
 type HTMLToX struct {
-	Browser *chrome.Browser
+	Browser *chrome.Chrome
 	Sockets map[string]*chrome.Socket
 	API     *api.API
 }
@@ -45,7 +44,7 @@ func New() (*HTMLToX, error) {
 		return nil, err
 	}
 
-	htmltox.Browser, err = chrome.GetBrowser()
+	htmltox.Browser, err = chrome.GetChrome()
 	if nil != err {
 		return nil, err
 	}
@@ -53,7 +52,7 @@ func New() (*HTMLToX, error) {
 	htmltox.Sockets = make(map[string]*chrome.Socket)
 
 	htmltox.API.Handle("GET", "/", htmltox.usage)
-	htmltox.API.Handle("GET", "/test", htmltox.test)
+	//htmltox.API.Handle("GET", "/test", htmltox.test)
 
 	return htmltox, nil
 }
@@ -197,84 +196,84 @@ func getParams(request *http.Request) (url.Values, error) {
 	return params, nil
 }
 
-func getHandler(params url.Values, api *api.API, response http.ResponseWriter) (func(results []chrome.SocketScreenshotResult), error) {
-	var raw bool
-	if _, ok := params["raw"]; ok {
-		raw = true
-	}
-	if len(params["url"]) > 1 && raw {
-		return nil, fmt.Errorf("'raw' is an invalid parameter when rendering multiple images")
-	} else if raw {
-		return func(results []chrome.SocketScreenshotResult) {
-			api.RespondWithImage(response, http.StatusOK, results[0].Data, "jpeg")
-			log.Debug("Rendered screenshot sent")
-		}, nil
-	} else {
-		return func(results []chrome.SocketScreenshotResult) {
-			data := make([]string, 0)
-			for _, result := range results {
-				data = append(data, result.Data)
-			}
-			api.RespondWithJSON(response, http.StatusOK, data)
-		}, nil
-	}
-}
+//func getHandler(params url.Values, api *api.API, response http.ResponseWriter) (func(results []chrome.SocketScreenshotResult), error) {
+//	var raw bool
+//	if _, ok := params["raw"]; ok {
+//		raw = true
+//	}
+//	if len(params["url"]) > 1 && raw {
+//		return nil, fmt.Errorf("'raw' is an invalid parameter when rendering multiple images")
+//	} else if raw {
+//		return func(results []chrome.SocketScreenshotResult) {
+//			api.RespondWithImage(response, http.StatusOK, results[0].Data, "jpeg")
+//			log.Debug("Rendered screenshot sent")
+//		}, nil
+//	} else {
+//		return func(results []chrome.SocketScreenshotResult) {
+//			data := make([]string, 0)
+//			for _, result := range results {
+//				data = append(data, result.Data)
+//			}
+//			api.RespondWithJSON(response, http.StatusOK, data)
+//		}, nil
+//	}
+//}
 
-func getHandlerTest(params url.Values, api *api.API, response http.ResponseWriter) (func(results []chrome.SocketResult), error) {
-	var raw bool
-	if _, ok := params["raw"]; ok {
-		raw = true
-	}
-	if len(params["url"]) > 1 && raw {
-		return nil, fmt.Errorf("'raw' is an invalid parameter when rendering multiple images")
-	} else if raw {
-		return func(results []chrome.SocketResult) {
-			api.RespondWithImage(response, http.StatusOK, results[0].Data, "jpeg")
-			log.Debug("Result sent")
-		}, nil
-	} else {
-		return func(results []chrome.SocketResult) {
-			data := make([]string, 0)
-			for _, result := range results {
-				data = append(data, result.Data)
-			}
-			api.RespondWithJSON(response, http.StatusOK, data)
-		}, nil
-	}
-}
+//func getHandlerTest(params url.Values, api *api.API, response http.ResponseWriter) (func(results []chrome.SocketResult), error) {
+//	var raw bool
+//	if _, ok := params["raw"]; ok {
+//		raw = true
+//	}
+//	if len(params["url"]) > 1 && raw {
+//		return nil, fmt.Errorf("'raw' is an invalid parameter when rendering multiple images")
+//	} else if raw {
+//		return func(results []chrome.SocketResult) {
+//			api.RespondWithImage(response, http.StatusOK, results[0].Data, "jpeg")
+//			log.Debug("Result sent")
+//		}, nil
+//	} else {
+//		return func(results []chrome.SocketResult) {
+//			data := make([]string, 0)
+//			for _, result := range results {
+//				data = append(data, result.Data)
+//			}
+//			api.RespondWithJSON(response, http.StatusOK, data)
+//		}, nil
+//	}
+//}
 
-func (htmltox *HTMLToX) test(response http.ResponseWriter, request *http.Request) {
-	var err error
-
-	switch request.Method {
-	case "GET":
-	case "POST":
-	default:
-		log.Errorf("Invalid request method '%s'", request.Method)
-		htmltox.API.RespondWithError(response, 400, fmt.Sprintf("%s is not a valid request method", request.Method))
-		return
-	}
-
-	params, err := getParams(request)
-	tmp, _ := json.Marshal(params)
-	log.Debugf("Query params: %s", string(tmp))
-	if nil != err {
-		log.Errorf("Failed to parse query params: %s", err)
-		htmltox.API.RespondWithError(response, 400, fmt.Sprintf("%s", err))
-		return
-	}
-
-	handler, err := getHandlerTest(params, htmltox.API, response)
-	if nil != err {
-		log.Errorf("Failed to generate response handler: %s", err)
-		htmltox.API.RespondWithError(response, 400, fmt.Sprintf("%s", err))
-		return
-	}
-	//chrome.RenderScreenshots(params, handler)
-	chrome.RenderScreenshotsTest(params, handler)
-
-	return
-}
+//func (htmltox *HTMLToX) test(response http.ResponseWriter, request *http.Request) {
+//	var err error
+//
+//	switch request.Method {
+//	case "GET":
+//	case "POST":
+//	default:
+//		log.Errorf("Invalid request method '%s'", request.Method)
+//		htmltox.API.RespondWithError(response, 400, fmt.Sprintf("%s is not a valid request method", request.Method))
+//		return
+//	}
+//
+//	params, err := getParams(request)
+//	tmp, _ := json.Marshal(params)
+//	log.Debugf("Query params: %s", string(tmp))
+//	if nil != err {
+//		log.Errorf("Failed to parse query params: %s", err)
+//		htmltox.API.RespondWithError(response, 400, fmt.Sprintf("%s", err))
+//		return
+//	}
+//
+//	handler, err := getHandlerTest(params, htmltox.API, response)
+//	if nil != err {
+//		log.Errorf("Failed to generate response handler: %s", err)
+//		htmltox.API.RespondWithError(response, 400, fmt.Sprintf("%s", err))
+//		return
+//	}
+//	//chrome.RenderScreenshots(params, handler)
+//	chrome.RenderScreenshotsTest(params, handler)
+//
+//	return
+//}
 
 func (htmltox *HTMLToX) usage(response http.ResponseWriter, request *http.Request) {
 	content, err := ioutil.ReadFile("/go/src/app/usage.html")

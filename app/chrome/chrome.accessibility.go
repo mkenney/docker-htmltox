@@ -1,6 +1,9 @@
 package chrome
 
-import "app/chrome/protocol"
+import (
+	accessibility "app/chrome/accessibility"
+	"app/chrome/protocol"
+)
 
 /*
 Accessibility - https://chromedevtools.github.io/devtools-protocol/tot/Accessibility/
@@ -17,8 +20,8 @@ func (Accessibility) GetPartialAXTree(
 	params *accessibility.PartialAXTreeParams,
 ) (accessibility.PartialAXTreeResult, error) {
 	command := &protocol.Command{
-		method: "Accessibility.getPartialAXTree",
-		params: params,
+		Method: "Accessibility.getPartialAXTree",
+		Params: params,
 	}
 	socket.SendCommand(command)
 	return command.Result.(accessibility.PartialAXTreeResult), command.Err

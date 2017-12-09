@@ -1,6 +1,7 @@
 package chrome
 
 import (
+	memory "app/chrome/memory"
 	"app/chrome/protocol"
 )
 
@@ -16,13 +17,13 @@ GetDOMCounters EXPERIMENTAL
 func (Memory) GetDOMCounters(
 	socket *Socket,
 	params *memory.GetDOMCountersParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Memory.getDOMCounters",
-		params: params,
+		Method: "Memory.getDOMCounters",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -30,12 +31,12 @@ PrepareForLeakDetection EXPERIMENTAL
 */
 func (Memory) PrepareForLeakDetection(
 	socket *Socket,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Memory.prepareForLeakDetection",
+		Method: "Memory.prepareForLeakDetection",
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -45,13 +46,13 @@ processes.
 func (Memory) SetPressureNotificationsSuppressed(
 	socket *Socket,
 	params *memory.SetPressureNotificationsSuppressedParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Memory.setPressureNotificationsSuppressed",
-		params: params,
+		Method: "Memory.setPressureNotificationsSuppressed",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -60,11 +61,11 @@ SimulatePressureNotification simulates a memory pressure notification in all pro
 func (Memory) SimulatePressureNotification(
 	socket *Socket,
 	params *memory.SimulatePressureNotificationParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Memory.simulatePressureNotification",
-		params: params,
+		Method: "Memory.simulatePressureNotification",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }

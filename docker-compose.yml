@@ -15,4 +15,5 @@ services:
         entrypoint: sh
         command:
             - '-cexu'
-            - 'cd /go/src/app && dep ensure -update && go build -o /go/bin/app && /go/bin/app'
+            #- 'cd /go/src/app && dep ensure -update && go build -o /go/bin/app && /go/bin/app'
+            - 'cd /go/src/app && go build -o /go/bin/app && /go/bin/app'

@@ -1,6 +1,9 @@
 package chrome
 
-import "app/chrome/protocol"
+import (
+	dom_snapshot "app/chrome/dom_snapshot"
+	"app/chrome/protocol"
+)
 
 /*
 DOMSnapshot facilitates obtaining document snapshots with DOM, layout, and style information.
@@ -18,8 +21,8 @@ func (DOMSnapshot) GetSnapshot(
 	params *dom_snapshot.GetSnapshotParams,
 ) (dom_snapshot.GetSnapshotResult, error) {
 	command := &protocol.Command{
-		method: "DOMSnapshot.getSnapshot",
-		params: params,
+		Method: "DOMSnapshot.getSnapshot",
+		Params: params,
 	}
 	socket.SendCommand(command)
 	return command.Result.(dom_snapshot.GetSnapshotResult), command.Err

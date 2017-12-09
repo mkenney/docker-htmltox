@@ -1,6 +1,9 @@
 package chrome
 
-import "app/chrome/protocol"
+import (
+	cache_storage "app/chrome/cache_storage"
+	"app/chrome/protocol"
+)
 
 /*
 CacheStorage - https://chromedevtools.github.io/devtools-protocol/tot/CacheStorage/
@@ -14,13 +17,13 @@ DeleteCache deletes a cache.
 func (CacheStorage) DeleteCache(
 	socket *Socket,
 	params *cache_storage.DeleteCacheParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "CacheStorage.deleteCache",
-		params: params,
+		Method: "CacheStorage.deleteCache",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -29,13 +32,13 @@ DeleteEntry deletes a cache entry.
 func (CacheStorage) DeleteEntry(
 	socket *Socket,
 	params *cache_storage.DeleteEntryParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "CacheStorage.deleteEntry",
-		params: params,
+		Method: "CacheStorage.deleteEntry",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -46,8 +49,8 @@ func (CacheStorage) RequestCacheNames(
 	params *cache_storage.RequestCacheNamesParams,
 ) (cache_storage.RequestCacheNamesResult, error) {
 	command := &protocol.Command{
-		method: "CacheStorage.requestCacheNames",
-		params: params,
+		Method: "CacheStorage.requestCacheNames",
+		Params: params,
 	}
 	socket.SendCommand(command)
 	return command.Result.(cache_storage.RequestCacheNamesResult), command.Err
@@ -61,8 +64,8 @@ func (CacheStorage) RequestCachedResponse(
 	params *cache_storage.RequestCachedResponseParams,
 ) (cache_storage.RequestCachedResponseResult, error) {
 	command := &protocol.Command{
-		method: "CacheStorage.requestCachedResponse",
-		params: params,
+		Method: "CacheStorage.requestCachedResponse",
+		Params: params,
 	}
 	socket.SendCommand(command)
 	return command.Result.(cache_storage.RequestCachedResponseResult), command.Err
@@ -76,8 +79,8 @@ func (CacheStorage) RequestEntries(
 	params *cache_storage.RequestEntriesParams,
 ) (cache_storage.RequestEntriesResult, error) {
 	command := &protocol.Command{
-		method: "CacheStorage.requestEntries",
-		params: params,
+		Method: "CacheStorage.requestEntries",
+		Params: params,
 	}
 	socket.SendCommand(command)
 	return command.Result.(cache_storage.RequestEntriesResult), command.Err

@@ -1,6 +1,9 @@
 package chrome
 
-import "app/chrome/protocol"
+import (
+	indexed_db "app/chrome/indexed_db"
+	"app/chrome/protocol"
+)
 
 /*
 IndexedDB - https://chromedevtools.github.io/devtools-protocol/tot/IndexedDB/
@@ -14,13 +17,13 @@ ClearObjectStore clears all entries from an object store.
 func (IndexedDB) ClearObjectStore(
 	socket *Socket,
 	params *indexed_db.ClearObjectStoreParams,
-) (indexed_db.ClearObjectStoreResult, error) {
+) error {
 	command := &protocol.Command{
-		method: "IndexedDB.clearObjectStore",
-		params: params,
+		Method: "IndexedDB.clearObjectStore",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return command.Result.(indexed_db.ClearObjectStoreResult), command.Err
+	return command.Err
 }
 
 /*
@@ -29,13 +32,13 @@ DeleteDatabase deletes a database.
 func (IndexedDB) DeleteDatabase(
 	socket *Socket,
 	params *indexed_db.DeleteDatabaseParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "IndexedDB.deleteDatabase",
-		params: params,
+		Method: "IndexedDB.deleteDatabase",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -43,12 +46,12 @@ Disable disables events from backend.
 */
 func (IndexedDB) Disable(
 	socket *Socket,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "IndexedDB.disable",
+		Method: "IndexedDB.disable",
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -56,12 +59,12 @@ Enable enables events from backend.
 */
 func (IndexedDB) Enable(
 	socket *Socket,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "IndexedDB.enable",
+		Method: "IndexedDB.enable",
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -72,8 +75,8 @@ func (IndexedDB) RequestData(
 	params *indexed_db.RequestDataParams,
 ) (indexed_db.RequestDataResult, error) {
 	command := &protocol.Command{
-		method: "IndexedDB.requestData",
-		params: params,
+		Method: "IndexedDB.requestData",
+		Params: params,
 	}
 	socket.SendCommand(command)
 	return command.Result.(indexed_db.RequestDataResult), command.Err
@@ -87,8 +90,8 @@ func (IndexedDB) RequestDatabase(
 	params *indexed_db.RequestDatabaseParams,
 ) (indexed_db.RequestDatabaseResult, error) {
 	command := &protocol.Command{
-		method: "IndexedDB.requestDatabase",
-		params: params,
+		Method: "IndexedDB.requestDatabase",
+		Params: params,
 	}
 	socket.SendCommand(command)
 	return command.Result.(indexed_db.RequestDatabaseResult), command.Err
@@ -102,8 +105,8 @@ func (IndexedDB) RequestDatabaseNames(
 	params *indexed_db.RequestDatabaseNamesParams,
 ) (indexed_db.RequestDatabaseNamesResult, error) {
 	command := &protocol.Command{
-		method: "IndexedDB.requestDatabaseNames",
-		params: params,
+		Method: "IndexedDB.requestDatabaseNames",
+		Params: params,
 	}
 	socket.SendCommand(command)
 	return command.Result.(indexed_db.RequestDatabaseNamesResult), command.Err

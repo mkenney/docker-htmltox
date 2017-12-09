@@ -15,10 +15,10 @@ type CollectClassNamesFromSubtreeParams struct {
 }
 
 /*
-collectClassNamesFromSubtreeResult represents the result of calls to
+CollectClassNamesFromSubtreeResult represents the result of calls to
 DOM.collectClassNamesFromSubtree.
 */
-type collectClassNamesFromSubtreeResult struct {
+type CollectClassNamesFromSubtreeResult struct {
 	// Class name list.
 	ClassNames []string `json:"classNames"`
 }
@@ -183,13 +183,13 @@ GetNodeForLocationParams represents DOM.getNodeForLocation parameters.
 */
 type GetNodeForLocationParams struct {
 	// X coordinate.
-	X integer `json:"x"`
+	X int `json:"x"`
 
 	// Y coordinate.
-	Y integer `json:"y"`
+	Y int `json:"y"`
 
 	// Optional. False to skip to the nearest non-UA shadow root ancestor (default: false).
-	IncludeUserAgentShadowDOM boolean `json:"includeUserAgentShadowDOM,omitempty"`
+	IncludeUserAgentShadowDOM bool `json:"includeUserAgentShadowDOM,omitempty"`
 }
 
 /*
@@ -246,10 +246,10 @@ type GetSearchResultsParams struct {
 	SearchID string `json:"searchId"`
 
 	// Start index of the search result to be returned.
-	FromIndex integer `json:"fromIndex"`
+	FromIndex int `json:"fromIndex"`
 
 	// End index of the search result to be returned.
-	ToIndex integer `json:"toIndex"`
+	ToIndex int `json:"toIndex"`
 }
 
 /*
@@ -331,13 +331,13 @@ type PushNodesByBackendIDsToFrontendParams struct {
 }
 
 /*
-PushNodesByBackendIdsToFrontendResult represents the result of calls to
+PushNodesByBackendIDsToFrontendResult represents the result of calls to
 DOM.pushNodesByBackendIdsToFrontend.
 */
-type PushNodesByBackendIdsToFrontendResult struct {
+type PushNodesByBackendIDsToFrontendResult struct {
 	// The array of IDs of pushed nodes that correspond to the backend IDs specified in
 	// backendNodeIDs.
-	NodeIDs []NodeId `json:"nodeIds"`
+	NodeIDs []NodeID `json:"nodeIds"`
 }
 
 /*
@@ -625,7 +625,7 @@ type ChildNodeRemovedEvent struct {
 DistributedNodesUpdatedEvent represents DOM.distributedNodesUpdated event data.
 */
 type DistributedNodesUpdatedEvent struct {
-	// Insertion point where distrubuted nodes were updated.
+	// Insertion point where distributed nodes were updated.
 	InsertionPointID NodeID `json:"insertionPointId"`
 
 	// Distributed nodes for given insertion point.

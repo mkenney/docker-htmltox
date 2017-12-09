@@ -1,6 +1,7 @@
 package chrome
 
 import (
+	overlay "app/chrome/overlay"
 	"app/chrome/protocol"
 	"encoding/json"
 
@@ -18,12 +19,12 @@ Disable disables domain notifications.
 */
 func (Overlay) Disable(
 	socket *Socket,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Overlay.disable",
+		Method: "Overlay.disable",
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -31,12 +32,12 @@ Enable enables domain notifications.
 */
 func (Overlay) Enable(
 	socket *Socket,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Overlay.enable",
+		Method: "Overlay.enable",
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -47,8 +48,8 @@ func (Overlay) GetHighlightObjectForTest(
 	params *overlay.GetHighlightObjectForTestParams,
 ) (overlay.GetHighlightObjectForTestResult, error) {
 	command := &protocol.Command{
-		method: "Overlay.getHighlightObjectForTest",
-		params: params,
+		Method: "Overlay.getHighlightObjectForTest",
+		Params: params,
 	}
 	socket.SendCommand(command)
 	return command.Result.(overlay.GetHighlightObjectForTestResult), command.Err
@@ -59,12 +60,12 @@ HideHighlight hides any highlight.
 */
 func (Overlay) HideHighlight(
 	socket *Socket,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Overlay.hideHighlight",
+		Method: "Overlay.hideHighlight",
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -73,13 +74,13 @@ HighlightFrame highlights owner element of the frame with given ID.
 func (Overlay) HighlightFrame(
 	socket *Socket,
 	params *overlay.HighlightFrameParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Overlay.highlightFrame",
-		params: params,
+		Method: "Overlay.highlightFrame",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -89,13 +90,13 @@ nodeID or objectID must be specified.
 func (Overlay) HighlightNode(
 	socket *Socket,
 	params *overlay.HighlightNodeParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Overlay.highlightNode",
-		params: params,
+		Method: "Overlay.highlightNode",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -105,13 +106,13 @@ viewport.
 func (Overlay) HighlightQuad(
 	socket *Socket,
 	params *overlay.HighlightQuadParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Overlay.highlightQuad",
-		params: params,
+		Method: "Overlay.highlightQuad",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -121,13 +122,13 @@ viewport.
 func (Overlay) HighlightRect(
 	socket *Socket,
 	params *overlay.HighlightRectParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Overlay.highlightRect",
-		params: params,
+		Method: "Overlay.highlightRect",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -137,13 +138,13 @@ highlighted. Backend then generates 'inspectNodeRequested' event upon element se
 func (Overlay) SetInspectMode(
 	socket *Socket,
 	params *overlay.SetInspectModeParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Overlay.setInspectMode",
-		params: params,
+		Method: "Overlay.setInspectMode",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -152,13 +153,13 @@ SetPausedInDebuggerMessage sets the paused message
 func (Overlay) SetPausedInDebuggerMessage(
 	socket *Socket,
 	params *overlay.SetPausedInDebuggerMessageParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Overlay.setPausedInDebuggerMessage",
-		params: params,
+		Method: "Overlay.setPausedInDebuggerMessage",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -167,13 +168,13 @@ SetShowDebugBorders requests that backend shows debug borders on layers.
 func (Overlay) SetShowDebugBorders(
 	socket *Socket,
 	params *overlay.SetShowDebugBordersParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Overlay.setShowDebugBorders",
-		params: params,
+		Method: "Overlay.setShowDebugBorders",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -182,13 +183,13 @@ SetShowFPSCounter requests that backend shows the FPS counter.
 func (Overlay) SetShowFPSCounter(
 	socket *Socket,
 	params *overlay.SetShowFPSCounterParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Overlay.setShowFPSCounter",
-		params: params,
+		Method: "Overlay.setShowFPSCounter",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -197,13 +198,13 @@ SetShowScrollBottleneckRects requests that backend shows scroll bottleneck rects
 func (Overlay) SetShowScrollBottleneckRects(
 	socket *Socket,
 	params *overlay.SetShowScrollBottleneckRectsParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Overlay.setShowScrollBottleneckRects",
-		params: params,
+		Method: "Overlay.setShowScrollBottleneckRects",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -212,13 +213,13 @@ SetShowViewportSizeOnResize paints viewport size upon main frame resize.
 func (Overlay) SetShowViewportSizeOnResize(
 	socket *Socket,
 	params *overlay.SetShowViewportSizeOnResizeParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Overlay.setShowViewportSizeOnResize",
-		params: params,
+		Method: "Overlay.setShowViewportSizeOnResize",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*
@@ -227,13 +228,13 @@ SetSuspended sets the suspended state
 func (Overlay) SetSuspended(
 	socket *Socket,
 	params *overlay.SetSuspendedParams,
-) (nil, error) {
+) error {
 	command := &protocol.Command{
-		method: "Overlay.setSuspended",
-		params: params,
+		Method: "Overlay.setSuspended",
+		Params: params,
 	}
 	socket.SendCommand(command)
-	return nil, command.Err
+	return command.Err
 }
 
 /*

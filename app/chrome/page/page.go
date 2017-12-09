@@ -282,10 +282,10 @@ type RemoveScriptToEvaluateOnLoadParams struct {
 }
 
 /*
-removeScriptToEvaluateOnNewDocumentParams represents Page.removeScriptToEvaluateOnNewDocument
+RemoveScriptToEvaluateOnNewDocumentParams represents Page.removeScriptToEvaluateOnNewDocument
 parameters.
 */
-type removeScriptToEvaluateOnNewDocumentParams struct {
+type RemoveScriptToEvaluateOnNewDocumentParams struct {
 	Identifier ScriptIdentifier `json:"identifier"`
 }
 
@@ -365,8 +365,8 @@ type SetDownloadBehaviorParams struct {
 	// available (otherwise deny). Allowed values: deny, allow, default.
 	Behavior string `json:"behavior"`
 
-	// Optional. The default path to save downloaded files to. This is requred if behavior is set to
-	// 'allow'.
+	// Optional. The default path to save downloaded files to. This is required if behavior is set
+	// to 'allow'.
 	DownloadPath string `json:"downloadPath,omitempty"`
 }
 
@@ -446,6 +446,11 @@ type FrameNavigatedEvent struct {
 }
 
 /*
+FrameResizedEvent represents Page.frameResized event data.
+*/
+type FrameResizedEvent struct{}
+
+/*
 FrameScheduledNavigationEvent represents Page.frameScheduledNavigation event data.
 */
 type FrameScheduledNavigationEvent struct {
@@ -454,7 +459,7 @@ type FrameScheduledNavigationEvent struct {
 
 	// Delay (in seconds) until the navigation is scheduled to begin. The navigation is not
 	// guaranteed to start.
-	Delay number `json:"delay"`
+	Delay float64 `json:"delay"`
 
 	// The reason for the navigation. Allowed values: formSubmissionGet, formSubmissionPost,
 	// httpHeaderRefresh, scriptInitiated, metaTagRefresh, pageBlockInterstitial, reload.
@@ -579,7 +584,7 @@ type WindowOpenEvent struct {
 	WindowFeatures []string `json:"windowFeatures"`
 
 	// Whether or not it was triggered by user gesture.
-	UserGesture boolean `json:"userGesture"`
+	UserGesture bool `json:"userGesture"`
 }
 
 //////////////////////////////////////
@@ -619,12 +624,6 @@ TimeSinceEpoch represents UTC time in seconds, counted from January 1, 1970.
 Duplicated from go-chrome/protocol/network to prevent import cycling
 */
 type TimeSinceEpoch int
-
-/*
-LoaderID is the Unique loader identifier.
-Duplicated from go-chrome/protocol/network to prevent import cycling
-*/
-type LoaderID string
 
 /*
 AppManifestError defines an error that occurs while parsing an app manifest.

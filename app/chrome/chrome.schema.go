@@ -2,6 +2,7 @@ package chrome
 
 import (
 	"app/chrome/protocol"
+	schema "app/chrome/schema"
 )
 
 /*
@@ -17,7 +18,7 @@ func (Schema) GetDomains(
 	socket *Socket,
 ) (schema.GetDomainsResult, error) {
 	command := &protocol.Command{
-		method: "Schema.getDomains",
+		Method: "Schema.getDomains",
 	}
 	socket.SendCommand(command)
 	return command.Result.(schema.GetDomainsResult), command.Err
