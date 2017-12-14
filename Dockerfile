@@ -27,25 +27,24 @@ RUN echo $TIMEZONE > /etc/timezone \
 # Install Chrome
 ARG CHROME_VERSION="google-chrome-stable"
 ARG CHROME_DRIVER_VERSION="latest"
-#RUN groupadd -r chrome \
-#    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
-#    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
-#    && apt-get -qqy update \
-#    && apt-get -qqy --no-install-recommends install ${CHROME_VERSION:-google-chrome-stable}
-#
-## Cleanup
-#RUN rm /etc/apt/sources.list.d/google.list \
-#    && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
+RUN groupadd -r chrome \
+    && wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add - \
+    && echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list \
+    && apt-get -qqy update \
+    && apt-get -qqy --no-install-recommends install ${CHROME_VERSION:-google-chrome-stable}
+
+# Cleanup
+RUN rm /etc/apt/sources.list.d/google.list \
+    && rm -rf /var/lib/apt/lists/* /var/cache/apt/*
 
 # Install htmltox
 COPY ./app /go/src/app
-RUN set -x \
-    && cd /go/src/app \
-    #&& dep ensure \
+RUN cd /go/src/app \
+    && dep ensure \
     && go build -o /go/bin/app
 
 # Grant the process permission to bind to port 80
-RUN setcap 'cap_net_bind_service=+ep' /go/bin/app
+#RUN setcap 'cap_net_bind_service=+ep' /go/bin/app
 
 WORKDIR /go/src/app
 EXPOSE 80

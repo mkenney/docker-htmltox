@@ -5,14 +5,20 @@ Chrome browser
 package htmltox
 
 import (
+	"encoding/base64"
+	"encoding/json"
 	"fmt"
 	"io/ioutil"
 	"net/http"
 	"net/url"
 	"strconv"
+	"time"
 
 	"app/api"
 	"app/chrome"
+	emulation "app/chrome/emulation"
+	page "app/chrome/page"
+	protocol "app/chrome/protocol"
 
 	log "github.com/Sirupsen/logrus"
 )
@@ -51,24 +57,247 @@ func New() (*HTMLToX, error) {
 
 	htmltox.Sockets = make(map[string]*chrome.Socket)
 
-	htmltox.API.Handle("GET", "/", htmltox.usage)
-	//htmltox.API.Handle("GET", "/test", htmltox.test)
+	htmltox.API.Handle("GET", "/", htmltox.Usage)
+	htmltox.API.Handle("GET", "/test", htmltox.RenderURL)
+	htmltox.API.Handle("GET", "/favicon.ico", func(response http.ResponseWriter, request *http.Request) {
+		data, err := ioutil.ReadFile("/go/src/app/assets/favicon.ico")
+		if nil != err {
+			log.Debugf(err.Error())
+			return
+		}
+		headers := make(map[string]string)
+		headers["Content-Type"] = "image/vnd.microsoft.icon"
+		htmltox.API.RespondWithRawBody(
+			request,
+			response,
+			200,
+			string(data),
+			headers,
+		)
+	})
 
 	return htmltox, nil
 }
 
+func (htmltox *HTMLToX) Usage(response http.ResponseWriter, request *http.Request) {
+	headers := make(map[string]string)
+	content, err := ioutil.ReadFile("/go/src/app/usage.html")
+	if err != nil {
+		log.Error(err)
+		htmltox.API.RespondWithErrorBody(
+			request,
+			response,
+			500,
+			fmt.Sprintf("%s", err),
+			headers,
+		)
+	} else {
+		htmltox.API.RespondWithRawBody(
+			request,
+			response,
+			200,
+			string(content),
+			headers,
+		)
+	}
+}
+
 /*
-Render takes an HTML source, either a string or a URL, and returns
-a byte array of the resulting image
+RenderURL takes a URL as the HTML source and returns a byte array of the resulting image
 
 @param source An HTML string or URL
 @param format An output format, one of 'jpg', 'png', 'pdf'
 @param width The viewport width
 @param height The viewport height
 */
-func (htmltox *HTMLToX) Render(source, format string, width, height int) (result []byte, err error) {
-	return result, fmt.Errorf("Not implemented")
+func (htmltox *HTMLToX) RenderURL(response http.ResponseWriter, request *http.Request) {
+	var err error
+	headers := make(map[string]string)
+
+	//switch request.Method {
+	//case "GET":
+	//case "POST":
+	//default:
+	//	log.Errorf("Invalid request method '%s'", request.Method)
+	//	htmltox.API.RespondWithErrorBody(
+	//		request,
+	//		response,
+	//		400,
+	//		fmt.Sprintf("%s is not a valid request method", request.Method),
+	//		headers,
+	//	)
+	//	return
+	//}
+
+	queryParams, err := getParams(request)
+	tmp, _ := json.Marshal(queryParams)
+	log.Debugf("Query params: %s", string(tmp))
+	if nil != err {
+		log.Errorf("Failed to parse query params: %s", err)
+		htmltox.API.RespondWithErrorBody(
+			request,
+			response,
+			400,
+			fmt.Sprintf("%s", err),
+			headers,
+		)
+		return
+	}
+
+	tab, err := chrome.NewTab(queryParams["url"][0])
+	if nil != err {
+		log.Error(err)
+		htmltox.API.RespondWithErrorBody(
+			request,
+			response,
+			500,
+			fmt.Sprintf("%s", err),
+			headers,
+		)
+		return
+	}
+
+	socket, err := chrome.NewSocket(tab)
+	if nil != err {
+		log.Error(err)
+		htmltox.API.RespondWithErrorBody(
+			request,
+			response,
+			500,
+			fmt.Sprintf("%s", err),
+			headers,
+		)
+		return
+	}
+
+	// Enable Page events
+	command := &protocol.Command{
+		Method: "Page.enable",
+	}
+	socket.SendCommand(command)
+	if nil != command.Err {
+		log.Error(command.Err)
+		htmltox.API.RespondWithErrorBody(
+			request,
+			response,
+			500,
+			fmt.Sprintf("%s", command.Err),
+			headers,
+		)
+		return
+	}
+
+	// Set the viewport stuff
+	SetDeviceMetricsOverrideParams := &emulation.SetDeviceMetricsOverrideParams{
+		Width:  1440,
+		Height: 1440,
+		ScreenOrientation: emulation.ScreenOrientation{
+			Type: "portraitPrimary",
+		},
+	}
+	emulation := &chrome.Emulation{}
+	err = emulation.SetDeviceMetricsOverride(socket, SetDeviceMetricsOverrideParams)
+	if nil != err {
+		log.Error(err)
+	}
+	//setVisibleSizeParams := &emulation.setVisibleSizeParams{
+	//	Width: 1024,
+	//}
+	//emulation.setVisibleSize(socket, emulationParams)
+
+	screenshotCaptureStarted := false
+	screenshotCaptured := false
+	screenshotReturned := make(chan bool)
+
+	screenshotParams := &page.CaptureScreenshotParams{
+		Format: queryParams["format"][0],
+	}
+	renderScreenshot := func() string {
+		screenshotCaptureStarted = true
+		page := &chrome.Page{}
+		result, err := page.CaptureScreenshot(socket, screenshotParams)
+		if nil != err {
+			log.Error(err)
+			htmltox.API.RespondWithErrorBody(
+				request,
+				response,
+				500,
+				fmt.Sprintf("%s", err),
+				headers,
+			)
+			return ""
+		}
+		log.Debug("Screenshot rendered")
+		return result.Data
+	}
+	returnScreenshot := func(data string) {
+		bytes, err := base64.StdEncoding.DecodeString(data)
+		if nil != err {
+			htmltox.API.RespondWithErrorBody(
+				request,
+				response,
+				500,
+				fmt.Sprintf("%s", err),
+				headers,
+			)
+		}
+
+		headers["Content-Type"] = fmt.Sprintf("image/%s", queryParams["format"][0])
+		htmltox.API.RespondWithRawBody(
+			request,
+			response,
+			200,
+			string(bytes),
+			headers,
+		)
+		screenshotReturned <- true
+	}
+
+	loadEventHandler := protocol.NewEventHandler("Page.loadEventFired", func(name string, params []byte) {
+		if false == screenshotCaptureStarted {
+			returnScreenshot(renderScreenshot())
+			screenshotCaptured = true
+		}
+	})
+	socket.AddEventHandler(loadEventHandler)
+
+	// Don't wait too long
+	if "" == queryParams["timeout"][0] {
+		queryParams["timeout"][0] = "120"
+	}
+	timeout, err := strconv.Atoi(queryParams["timeout"][0])
+	if nil != err {
+		htmltox.API.RespondWithErrorBody(
+			request,
+			response,
+			500,
+			fmt.Sprintf("%s", err),
+			headers,
+		)
+	}
+
+	// Force a render after max time
+	maxUntil := time.Now().Add(time.Second * time.Duration(timeout))
+	for {
+		if true == screenshotCaptured {
+			break
+		} else if true == screenshotCaptureStarted {
+			if true == <-screenshotReturned {
+				break
+			}
+		} else if time.Now().Before(maxUntil) {
+			time.Sleep(1)
+		} else {
+			screenshotCaptureStarted = true
+			returnScreenshot(renderScreenshot())
+			screenshotCaptured = true
+		}
+	}
 }
+
+//func (htmltox *HTMLToX) Render(source, format string, width, height int) (result []byte, err error) {
+//	return result, fmt.Errorf("Not implemented")
+//}
 
 func getParams(request *http.Request) (url.Values, error) {
 	params, err := url.ParseQuery(request.URL.RawQuery)
@@ -274,13 +503,3 @@ func getParams(request *http.Request) (url.Values, error) {
 //
 //	return
 //}
-
-func (htmltox *HTMLToX) usage(response http.ResponseWriter, request *http.Request) {
-	content, err := ioutil.ReadFile("/go/src/app/usage.html")
-	if err != nil {
-		log.Error(err)
-		htmltox.API.RespondWithError(response, http.StatusInternalServerError, err.Error())
-	} else {
-		htmltox.API.RespondWithHTML(response, http.StatusOK, string(content))
-	}
-}
