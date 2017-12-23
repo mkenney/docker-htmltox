@@ -10,7 +10,8 @@ services:
             - "9222:9222"
         volumes:
             - ./app:/go/src/app
-            - $HOME/repos/github.com/mkenney/go-chrome:/go/src/github.com/mkenney/go-chrome
+            - $HOME/repos/src/github.com/mkenney/go-chrome:/go/src/github.com/mkenney/go-chrome
+            - $HOME/repos/src/github.com/mkenney/docker-htmltox:/go/src/github.com/mkenney/docker-htmltox
         environment:
             - LOG_LEVEL=debug
         entrypoint: sh
