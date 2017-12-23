@@ -4,9 +4,8 @@ Package main executes the HTML Conversion Service
 package main
 
 import (
-	htmltox "app/htmltox"
-
 	log "github.com/Sirupsen/logrus"
+	htmltox "github.com/mkenney/docker-htmltox/app/htmltox"
 )
 
 func main() {

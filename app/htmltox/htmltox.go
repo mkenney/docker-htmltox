@@ -14,11 +14,11 @@ import (
 	"strconv"
 	"time"
 
-	"app/api"
-	"app/chrome"
-	emulation "app/chrome/emulation"
-	page "app/chrome/page"
-	protocol "app/chrome/protocol"
+	"github.com/mkenney/docker-htmltox/app/api"
+	"github.com/mkenney/go-chrome"
+	emulation "github.com/mkenney/go-chrome/emulation"
+	page "github.com/mkenney/go-chrome/page"
+	protocol "github.com/mkenney/go-chrome/protocol"
 
 	log "github.com/Sirupsen/logrus"
 )
