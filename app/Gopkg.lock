@@ -27,19 +27,69 @@
 
 [[projects]]
   branch = "master"
+  name = "github.com/mkenney/go-chrome"
+  packages = [
+    ".",
+    "accessibility",
+    "animation",
+    "application_cache",
+    "audits",
+    "browser",
+    "cache_storage",
+    "console",
+    "css",
+    "database",
+    "debugger",
+    "device_orientation",
+    "dom",
+    "dom_debugger",
+    "dom_snapshot",
+    "dom_storage",
+    "emulation",
+    "headless_experimental",
+    "heap_profiler",
+    "indexed_db",
+    "input",
+    "io",
+    "layer_tree",
+    "log",
+    "memory",
+    "network",
+    "overlay",
+    "page",
+    "performance",
+    "profiler",
+    "protocol",
+    "runtime",
+    "schema",
+    "security",
+    "service_worker",
+    "storage",
+    "system_info",
+    "target",
+    "tethering",
+    "tracing"
+  ]
+  revision = "4959afbc11865092f06972691da81d5bc0f7ade5"
+
+[[projects]]
+  branch = "master"
   name = "golang.org/x/crypto"
   packages = ["ssh/terminal"]
-  revision = "94eea52f7b742c7cbe0b03b22f0c4c8631ece122"
+  revision = "d585fd2cc9195196078f516b69daff6744ef5e84"
 
 [[projects]]
   branch = "master"
   name = "golang.org/x/sys"
-  packages = ["unix","windows"]
-  revision = "b8f5ef32195cae6470b728e8ca677f0dbed1a004"
+  packages = [
+    "unix",
+    "windows"
+  ]
+  revision = "83801418e1b59fb1880e363299581ee543af32ca"
 
 [solve-meta]
   analyzer-name = "dep"
   analyzer-version = 1
-  inputs-digest = "0db8f817aa5b97cbceceb1289674498b79ba4d37687853d2fa8aa9e312852fb3"
+  inputs-digest = "75270fa2fbb7713a167a9d16e49f9cd1215a747c799adb691fe232410962f1fd"
   solver-name = "gps-cdcl"
   solver-version = 1
