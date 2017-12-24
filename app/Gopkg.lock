@@ -70,7 +70,7 @@
     "tethering",
     "tracing"
   ]
-  revision = "4959afbc11865092f06972691da81d5bc0f7ade5"
+  revision = "4e74bb1bdb50c397204a9fa232ce7e7306967685"
 
 [[projects]]
   branch = "master"

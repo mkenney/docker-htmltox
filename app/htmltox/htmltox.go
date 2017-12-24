@@ -18,7 +18,7 @@ import (
 	"github.com/mkenney/go-chrome"
 	emulation "github.com/mkenney/go-chrome/emulation"
 	page "github.com/mkenney/go-chrome/page"
-	protocol "github.com/mkenney/go-chrome/protocol"
+	"github.com/mkenney/go-chrome/protocol"
 
 	log "github.com/Sirupsen/logrus"
 )
@@ -79,6 +79,9 @@ func New() (*HTMLToX, error) {
 	return htmltox, nil
 }
 
+/*
+Usage returns usage information
+*/
 func (htmltox *HTMLToX) Usage(response http.ResponseWriter, request *http.Request) {
 	headers := make(map[string]string)
 	content, err := ioutil.ReadFile("/go/src/app/usage.html")
@@ -294,10 +297,6 @@ func (htmltox *HTMLToX) RenderURL(response http.ResponseWriter, request *http.Re
 		}
 	}
 }
-
-//func (htmltox *HTMLToX) Render(source, format string, width, height int) (result []byte, err error) {
-//	return result, fmt.Errorf("Not implemented")
-//}
 
 func getParams(request *http.Request) (url.Values, error) {
 	params, err := url.ParseQuery(request.URL.RawQuery)
