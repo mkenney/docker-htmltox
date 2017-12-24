@@ -15,7 +15,7 @@ import (
 	"strings"
 	"text/template"
 
-	log "github.com/Sirupsen/logrus"
+	log "github.com/sirupsen/logrus"
 )
 
 /*

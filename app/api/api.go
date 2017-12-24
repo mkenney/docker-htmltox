@@ -10,12 +10,12 @@ import (
 	"net/http"
 	"strings"
 
-	log "github.com/Sirupsen/logrus"
 	"github.com/gorilla/mux"
+	log "github.com/sirupsen/logrus"
 )
 
 func init() {
-	log.SetFormatter(&log.TextFormatter{})
+	//log.SetFormatter(&log.TextFormatter{})
 }
 
 /*

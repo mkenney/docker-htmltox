@@ -1,9 +1,0 @@
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/mkenney/go-chrome"
-
-[[constraint]]
-  branch = "master"
-  name = "github.com/golang/glog"
-
