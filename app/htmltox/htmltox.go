@@ -15,24 +15,20 @@ import (
 	"time"
 
 	"github.com/mkenney/docker-htmltox/app/api"
-	"github.com/mkenney/go-chrome"
-	emulation "github.com/mkenney/go-chrome/emulation"
-	page "github.com/mkenney/go-chrome/page"
-	"github.com/mkenney/go-chrome/protocol"
+	chrome "github.com/mkenney/go-chrome"
+	"github.com/mkenney/go-chrome/protocol/emulation"
+	"github.com/mkenney/go-chrome/protocol/page"
+	sock "github.com/mkenney/go-chrome/socket"
 
 	log "github.com/sirupsen/logrus"
 )
-
-func init() {
-	//log.SetFormatter(&log.TextFormatter{})
-}
 
 /*
 HTMLToX defines the struct for the HTML conversion API service
 */
 type HTMLToX struct {
-	Browser *chrome.Chrome
-	Sockets map[string]*chrome.Socket
+	Browser chrome.Chromium
+	Sockets map[string]sock.Socketer
 	API     *api.API
 }
 
@@ -41,26 +37,34 @@ New returns a pointer to an HTMLToX struct
 */
 func New() (*HTMLToX, error) {
 	var err error
-	htmltox := new(HTMLToX)
 
-	htmltox.API = api.New()
-
-	err = chrome.Launch(0, "", "", "")
-	if nil != err {
-		return nil, err
+	htmltox := &HTMLToX{
+		API: api.New(),
+		Browser: chrome.New(&chrome.Args{
+			"addr":               []interface{}{"localhost"},
+			"disable-extensions": nil,
+			"disable-gpu":        nil,
+			"headless":           nil,
+			"hide-scrollbars":    nil,
+			"no-first-run":       nil,
+			"no-sandbox":         nil,
+			"port":               []interface{}{9222},
+			"remote-debugging-address": []interface{}{"0.0.0.0"},
+			"remote-debugging-port":    []interface{}{9222},
+		}, "", "", ""),
+		Sockets: make(map[string]sock.Socketer),
 	}
 
-	htmltox.Browser, err = chrome.GetChrome()
+	err = htmltox.Browser.Launch()
 	if nil != err {
+		log.Error(err)
 		return nil, err
 	}
-
-	htmltox.Sockets = make(map[string]*chrome.Socket)
 
 	htmltox.API.Handle("GET", "/", htmltox.Usage)
 	htmltox.API.Handle("GET", "/test", htmltox.RenderURL)
 	htmltox.API.Handle("GET", "/favicon.ico", func(response http.ResponseWriter, request *http.Request) {
-		data, err := ioutil.ReadFile("/go/src/app/assets/favicon.ico")
+		data, err := ioutil.ReadFile("/go/src/github.com/mkenney/docker-htmltox/app/assets/favicon.ico")
 		if nil != err {
 			log.Debugf(err.Error())
 			return
@@ -84,7 +88,7 @@ Usage returns usage information
 */
 func (htmltox *HTMLToX) Usage(response http.ResponseWriter, request *http.Request) {
 	headers := make(map[string]string)
-	content, err := ioutil.ReadFile("/go/src/app/usage.html")
+	content, err := ioutil.ReadFile("/go/src/github.com/mkenney/docker-htmltox/app/usage.html")
 	if err != nil {
 		log.Error(err)
 		htmltox.API.RespondWithErrorBody(
@@ -114,8 +118,6 @@ RenderURL takes a URL as the HTML source and returns a byte array of the resulti
 @param height The viewport height
 */
 func (htmltox *HTMLToX) RenderURL(response http.ResponseWriter, request *http.Request) {
-	var err error
-	headers := make(map[string]string)
 
 	//switch request.Method {
 	//case "GET":
@@ -136,103 +138,87 @@ func (htmltox *HTMLToX) RenderURL(response http.ResponseWriter, request *http.Re
 	tmp, _ := json.Marshal(queryParams)
 	log.Debugf("Query params: %s", string(tmp))
 	if nil != err {
-		log.Errorf("Failed to parse query params: %s", err)
 		htmltox.API.RespondWithErrorBody(
 			request,
 			response,
 			400,
-			fmt.Sprintf("%s", err),
-			headers,
+			fmt.Errorf("%s", "Failed to parse query params"),
+			make(map[string]string),
 		)
 		return
 	}
 
-	tab, err := chrome.NewTab(queryParams["url"][0])
+	tab, err := htmltox.Browser.NewTab(queryParams["url"][0])
 	if nil != err {
 		log.Error(err)
 		htmltox.API.RespondWithErrorBody(
 			request,
 			response,
 			500,
-			fmt.Sprintf("%s", err),
-			headers,
-		)
-		return
-	}
-
-	socket, err := chrome.NewSocket(tab)
-	if nil != err {
-		log.Error(err)
-		htmltox.API.RespondWithErrorBody(
-			request,
-			response,
-			500,
-			fmt.Sprintf("%s", err),
-			headers,
+			err.Error(),
+			make(map[string]string),
 		)
 		return
 	}
 
 	// Enable Page events
-	command := &protocol.Command{
-		Method: "Page.enable",
-	}
-	socket.SendCommand(command)
-	if nil != command.Err {
-		log.Error(command.Err)
+	err = tab.Socket().Page().Enable()
+	if nil != err {
+		log.Errorf("Page.Enable: %s", err.Error())
 		htmltox.API.RespondWithErrorBody(
 			request,
 			response,
 			500,
-			fmt.Sprintf("%s", command.Err),
-			headers,
+			fmt.Sprintf("%s", err),
+			make(map[string]string),
 		)
 		return
 	}
 
-	// Set the viewport stuff
-	SetDeviceMetricsOverrideParams := &emulation.SetDeviceMetricsOverrideParams{
+	err = tab.Socket().Emulation().SetVisibleSize(&emulation.SetVisibleSizeParams{
 		Width:  1440,
 		Height: 1440,
-		ScreenOrientation: emulation.ScreenOrientation{
-			Type: "portraitPrimary",
-		},
-	}
-	emulation := &chrome.Emulation{}
-	err = emulation.SetDeviceMetricsOverride(socket, SetDeviceMetricsOverrideParams)
+	})
 	if nil != err {
 		log.Error(err)
 	}
-	//setVisibleSizeParams := &emulation.setVisibleSizeParams{
-	//	Width: 1024,
-	//}
-	//emulation.setVisibleSize(socket, emulationParams)
+
+	// Set the viewport stuff
+	err = tab.Socket().Emulation().SetDeviceMetricsOverride(&emulation.SetDeviceMetricsOverrideParams{
+		Width:  1440,
+		Height: 1440,
+		ScreenOrientation: &emulation.ScreenOrientation{
+			Type:  "portraitPrimary",
+			Angle: 90,
+		},
+	})
+	if nil != err {
+		log.Errorf("Emulation.SetDeviceMetricsOverride: %s", err.Error())
+	}
 
 	screenshotCaptureStarted := false
 	screenshotCaptured := false
 	screenshotReturned := make(chan bool)
-
-	screenshotParams := &page.CaptureScreenshotParams{
-		Format: queryParams["format"][0],
-	}
 	renderScreenshot := func() string {
 		screenshotCaptureStarted = true
-		page := &chrome.Page{}
-		result, err := page.CaptureScreenshot(socket, screenshotParams)
+		result, err := tab.Socket().Page().CaptureScreenshot(&page.CaptureScreenshotParams{
+			Format: queryParams["format"][0],
+		})
 		if nil != err {
-			log.Error(err)
+			log.Errorf("Page.CaptureScreenshot: %s", err.Error())
 			htmltox.API.RespondWithErrorBody(
 				request,
 				response,
 				500,
 				fmt.Sprintf("%s", err),
-				headers,
+				make(map[string]string),
 			)
 			return ""
 		}
-		log.Debug("Screenshot rendered")
+		log.Debugf("Screenshot rendered")
 		return result.Data
 	}
+
 	returnScreenshot := func(data string) {
 		bytes, err := base64.StdEncoding.DecodeString(data)
 		if nil != err {
@@ -241,10 +227,10 @@ func (htmltox *HTMLToX) RenderURL(response http.ResponseWriter, request *http.Re
 				response,
 				500,
 				fmt.Sprintf("%s", err),
-				headers,
+				make(map[string]string),
 			)
 		}
-
+		headers := make(map[string]string)
 		headers["Content-Type"] = fmt.Sprintf("image/%s", queryParams["format"][0])
 		htmltox.API.RespondWithRawBody(
 			request,
@@ -256,17 +242,17 @@ func (htmltox *HTMLToX) RenderURL(response http.ResponseWriter, request *http.Re
 		screenshotReturned <- true
 	}
 
-	loadEventHandler := protocol.NewEventHandler("Page.loadEventFired", func(name string, params []byte) {
+	loadEventHandler := sock.NewEventHandler("Page.loadEventFired", func(response *sock.Response) {
 		if false == screenshotCaptureStarted {
 			returnScreenshot(renderScreenshot())
 			screenshotCaptured = true
 		}
 	})
-	socket.AddEventHandler(loadEventHandler)
+	tab.Socket().AddEventHandler(loadEventHandler)
 
 	// Don't wait too long
 	if "" == queryParams["timeout"][0] {
-		queryParams["timeout"][0] = "120"
+		queryParams["timeout"][0] = "30"
 	}
 	timeout, err := strconv.Atoi(queryParams["timeout"][0])
 	if nil != err {
@@ -275,7 +261,7 @@ func (htmltox *HTMLToX) RenderURL(response http.ResponseWriter, request *http.Re
 			response,
 			500,
 			fmt.Sprintf("%s", err),
-			headers,
+			make(map[string]string),
 		)
 	}
 

@@ -8,6 +8,7 @@ package main
 
 import (
 	"bytes"
+	"encoding/json"
 	"fmt"
 	"os"
 	"path"
@@ -33,32 +34,71 @@ func init() {
 		log.Fatalf("Could not parse log level flag: %s", err)
 	}
 
-	formatter := new(logFormat)
-	log.SetFormatter(formatter)
+	log.SetFormatter(&textFormat{})
 	log.SetLevel(level)
 }
 
-var logTemplate = template.Must(template.New("log").Funcs(funcMap).Parse("{{.Timestamp}} {{.Hostname}} {{Pad .Level 4 | Upper}} {{.Caller}} {{.Message}}"))
+/*
+RFC3339Milli defines an RFC3339 date format with miliseconds
+*/
+const RFC3339Milli = "2006-01-02T15:04:05.000Z07:00"
 
-var funcMap = template.FuncMap{
-	"Upper": strings.ToUpper,
-	"Pad":   pad,
-}
-
-func pad(str string, length int) string {
+func getCaller() string {
+	caller := ""
+	a := 0
 	for {
-		str += " "
-		if len(str) > length {
-			return str[0:length]
+		if pc, file, line, ok := runtime.Caller(a + 2); ok {
+			if !strings.Contains(file, "github.com/sirupsen/logrus") {
+				caller = fmt.Sprintf("%s:%d %s", path.Base(file), line, runtime.FuncForPC(pc).Name())
+				break
+			}
+		} else {
+			break
 		}
+		a++
 	}
+	return caller
 }
 
-type logFormat struct {
+type logData struct {
+	Timestamp string `json:"time"`
+	Level     string `json:"level"`
+	Hostname  string `json:"host"`
+	Caller    string `json:"caller"`
+	Message   string `json:"msg"`
+}
+
+type jsonFormat struct {
+	*log.JSONFormatter
+}
+
+/*
+Format is a custom log format method
+*/
+func (l *jsonFormat) Format(entry *log.Entry) ([]byte, error) {
+	data := &logData{
+		Timestamp: entry.Time.Format(RFC3339Milli),
+		Level:     entry.Level.String(),
+		Hostname:  os.Getenv("HOSTNAME"),
+		Caller:    getCaller(),
+		Message:   entry.Message,
+	}
+
+	serialized, err := json.Marshal(data)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to marshal log data as JSON: %s", err.Error())
+	}
+	return append(serialized, '\n'), nil
+}
+
+type textFormat struct {
 	*log.TextFormatter
 }
 
-func (l *logFormat) Format(entry *log.Entry) ([]byte, error) {
+/*
+Format is a custom log format method
+*/
+func (l *textFormat) Format(entry *log.Entry) ([]byte, error) {
 	var logLine *bytes.Buffer
 	RFC3339Milli := "2006-01-02T15:04:05.000Z07:00"
 
@@ -68,34 +108,18 @@ func (l *logFormat) Format(entry *log.Entry) ([]byte, error) {
 		logLine = &bytes.Buffer{}
 	}
 
-	caller := ""
-	a := 0
-	for {
-		if pc, file, line, ok := runtime.Caller(a + 1); ok {
-			if !strings.Contains(file, "github.com/Sirupsen/logrus") {
-				caller = fmt.Sprintf("%s:%d %s -", path.Base(file), line, runtime.FuncForPC(pc).Name())
-				break
-			}
-		} else {
-			break
-		}
-		a++
+	data := &logData{
+		Timestamp: entry.Time.Format(RFC3339Milli),
+		Hostname:  os.Getenv("HOSTNAME"),
+		Level:     entry.Level.String(),
+		Caller:    getCaller(),
+		Message:   entry.Message,
 	}
-
-	data := struct {
-		Timestamp string
-		Hostname  string
-		Level     string
-		Caller    string
-		Message   string
-	}{
-		entry.Time.Format(RFC3339Milli),
-		os.Getenv("HOSTNAME"),
-		entry.Level.String(),
-		caller,
-		entry.Message,
-	}
-	logTemplate.Execute(logLine, data)
+	textTemplate.Execute(logLine, data)
 	logLine.WriteByte('\n')
 	return logLine.Bytes(), nil
 }
+
+var textTemplate = template.Must(
+	template.New("log").Parse(`time="{{ .Timestamp }}" level="{{ .Level }}" host="{{ .Hostname }}" caller="{{ .Caller }}" msg="{{ .Message }}"`),
+)

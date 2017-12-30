@@ -8,11 +8,14 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
+func init() {
+	log.SetFormatter(&textFormat{})
+}
+
 func main() {
-	log.Info("Starting Chrome")
 	htmltox, err := htmltox.New()
 	if nil != err {
-		log.Fatalf("Could not initialize conversion service: %v", err)
+		log.Fatalf("Could not initialize conversion service: %s", err.Error())
 	}
 	log.Info("Starting API server")
 	htmltox.API.Run(80)

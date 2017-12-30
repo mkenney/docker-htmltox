@@ -14,10 +14,6 @@ import (
 	log "github.com/sirupsen/logrus"
 )
 
-func init() {
-	//log.SetFormatter(&log.TextFormatter{})
-}
-
 /*
 API contains HTTP and SQL helper functions and manages pointers to those resources
 */
