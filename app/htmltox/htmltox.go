@@ -18,7 +18,7 @@ import (
 	chrome "github.com/mkenney/go-chrome"
 	"github.com/mkenney/go-chrome/protocol/emulation"
 	"github.com/mkenney/go-chrome/protocol/page"
-	sock "github.com/mkenney/go-chrome/socket"
+	"github.com/mkenney/go-chrome/socket"
 
 	log "github.com/sirupsen/logrus"
 )
@@ -28,7 +28,7 @@ HTMLToX defines the struct for the HTML conversion API service
 */
 type HTMLToX struct {
 	Browser chrome.Chromium
-	Sockets map[string]sock.Socketer
+	Sockets map[string]socket.Socketer
 	API     *api.API
 }
 
@@ -40,7 +40,7 @@ func New() (*HTMLToX, error) {
 
 	htmltox := &HTMLToX{
 		API: api.New(),
-		Browser: chrome.New(&chrome.Args{
+		Browser: chrome.New(&chrome.Flags{
 			"addr":               []interface{}{"localhost"},
 			"disable-extensions": nil,
 			"disable-gpu":        nil,
@@ -51,8 +51,8 @@ func New() (*HTMLToX, error) {
 			"port":               []interface{}{9222},
 			"remote-debugging-address": []interface{}{"0.0.0.0"},
 			"remote-debugging-port":    []interface{}{9222},
-		}, "", "", ""),
-		Sockets: make(map[string]sock.Socketer),
+		}, "", "", "", ""),
+		Sockets: make(map[string]socket.Socketer),
 	}
 
 	err = htmltox.Browser.Launch()
@@ -162,7 +162,7 @@ func (htmltox *HTMLToX) RenderURL(response http.ResponseWriter, request *http.Re
 	}
 
 	// Enable Page events
-	err = tab.Socket().Page().Enable()
+	err = tab.Page().Enable()
 	if nil != err {
 		log.Errorf("Page.Enable: %s", err.Error())
 		htmltox.API.RespondWithErrorBody(
@@ -175,7 +175,7 @@ func (htmltox *HTMLToX) RenderURL(response http.ResponseWriter, request *http.Re
 		return
 	}
 
-	err = tab.Socket().Emulation().SetVisibleSize(&emulation.SetVisibleSizeParams{
+	err = tab.Emulation().SetVisibleSize(&emulation.SetVisibleSizeParams{
 		Width:  1440,
 		Height: 1440,
 	})
@@ -184,7 +184,7 @@ func (htmltox *HTMLToX) RenderURL(response http.ResponseWriter, request *http.Re
 	}
 
 	// Set the viewport stuff
-	err = tab.Socket().Emulation().SetDeviceMetricsOverride(&emulation.SetDeviceMetricsOverrideParams{
+	err = tab.Emulation().SetDeviceMetricsOverride(&emulation.SetDeviceMetricsOverrideParams{
 		Width:  1440,
 		Height: 1440,
 		ScreenOrientation: &emulation.ScreenOrientation{
@@ -201,7 +201,7 @@ func (htmltox *HTMLToX) RenderURL(response http.ResponseWriter, request *http.Re
 	screenshotReturned := make(chan bool)
 	renderScreenshot := func() string {
 		screenshotCaptureStarted = true
-		result, err := tab.Socket().Page().CaptureScreenshot(&page.CaptureScreenshotParams{
+		result, err := tab.Page().CaptureScreenshot(&page.CaptureScreenshotParams{
 			Format: queryParams["format"][0],
 		})
 		if nil != err {
@@ -242,13 +242,13 @@ func (htmltox *HTMLToX) RenderURL(response http.ResponseWriter, request *http.Re
 		screenshotReturned <- true
 	}
 
-	loadEventHandler := sock.NewEventHandler("Page.loadEventFired", func(response *sock.Response) {
+	loadEventHandler := socket.NewEventHandler("Page.loadEventFired", func(response *socket.Response) {
 		if false == screenshotCaptureStarted {
 			returnScreenshot(renderScreenshot())
 			screenshotCaptured = true
 		}
 	})
-	tab.Socket().AddEventHandler(loadEventHandler)
+	tab.AddEventHandler(loadEventHandler)
 
 	// Don't wait too long
 	if "" == queryParams["timeout"][0] {
