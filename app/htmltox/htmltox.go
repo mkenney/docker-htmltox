@@ -16,8 +16,8 @@ import (
 
 	"github.com/mkenney/docker-htmltox/app/api"
 	chrome "github.com/mkenney/go-chrome"
-	"github.com/mkenney/go-chrome/protocol/emulation"
-	"github.com/mkenney/go-chrome/protocol/page"
+	"github.com/mkenney/go-chrome/cdtp/emulation"
+	"github.com/mkenney/go-chrome/cdtp/page"
 	"github.com/mkenney/go-chrome/socket"
 
 	log "github.com/sirupsen/logrus"
