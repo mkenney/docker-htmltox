@@ -162,29 +162,29 @@ func (htmltox *HTMLToX) RenderURL(response http.ResponseWriter, request *http.Re
 	}
 
 	// Enable Page events
-	err = tab.Page().Enable()
-	if nil != err {
-		log.Errorf("Page.Enable: %s", err.Error())
+	enableResult := <-tab.Page().Enable()
+	if nil != enableResult.CDTPError {
+		log.Errorf("Page.Enable: %s", enableResult.CDTPError.Error())
 		htmltox.API.RespondWithErrorBody(
 			request,
 			response,
 			500,
-			fmt.Sprintf("%s", err),
+			fmt.Sprintf("%s", enableResult.CDTPError),
 			make(map[string]string),
 		)
 		return
 	}
 
-	err = tab.Emulation().SetVisibleSize(&emulation.SetVisibleSizeParams{
+	emulationSizeResult := <-tab.Emulation().SetVisibleSize(&emulation.SetVisibleSizeParams{
 		Width:  1440,
 		Height: 1440,
 	})
-	if nil != err {
-		log.Error(err)
+	if nil != emulationSizeResult.CDTPError {
+		log.Error(emulationSizeResult.CDTPError)
 	}
 
 	// Set the viewport stuff
-	err = tab.Emulation().SetDeviceMetricsOverride(&emulation.SetDeviceMetricsOverrideParams{
+	emulationDeviceResult := <-tab.Emulation().SetDeviceMetricsOverride(&emulation.SetDeviceMetricsOverrideParams{
 		Width:  1440,
 		Height: 1440,
 		ScreenOrientation: &emulation.ScreenOrientation{
@@ -192,8 +192,8 @@ func (htmltox *HTMLToX) RenderURL(response http.ResponseWriter, request *http.Re
 			Angle: 90,
 		},
 	})
-	if nil != err {
-		log.Errorf("Emulation.SetDeviceMetricsOverride: %s", err.Error())
+	if nil != emulationDeviceResult.CDTPError {
+		log.Errorf("Emulation.SetDeviceMetricsOverride: %s", emulationDeviceResult.CDTPError.Error())
 	}
 
 	screenshotCaptureStarted := false
@@ -201,11 +201,11 @@ func (htmltox *HTMLToX) RenderURL(response http.ResponseWriter, request *http.Re
 	screenshotReturned := make(chan bool)
 	renderScreenshot := func() string {
 		screenshotCaptureStarted = true
-		result, err := tab.Page().CaptureScreenshot(&page.CaptureScreenshotParams{
+		result := <-tab.Page().CaptureScreenshot(&page.CaptureScreenshotParams{
 			Format: queryParams["format"][0],
 		})
-		if nil != err {
-			log.Errorf("Page.CaptureScreenshot: %s", err.Error())
+		if nil != result.CDTPError {
+			log.Errorf("Page.CaptureScreenshot: %s", result.CDTPError.Error())
 			htmltox.API.RespondWithErrorBody(
 				request,
 				response,
